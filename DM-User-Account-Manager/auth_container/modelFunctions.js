@@ -1,10 +1,9 @@
-const MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+ "@" + process.env.mongo_connection_url + "/test?retryWrites=true&w=majority"
 module.exports = {
-  
   addUserRecordToModel: function(emailAddress, username, type, parent, auth0_user_id) {
     require('dotenv').config();
     thismodule = require('./modelFunctions.js');
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+"@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve,reject) => {
       MongoClient.connect(MongoUrl, function(err, db) {
         if (err) { db.close(); reject(err); }
@@ -19,6 +18,7 @@ module.exports = {
   fetchUserByAuth0Id: function(auth0_user_id) {
     require('dotenv').config();
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+"@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve,reject) => {
       MongoClient.connect(MongoUrl, function(err, db) {
         if (err) reject(err);

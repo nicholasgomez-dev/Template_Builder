@@ -1,11 +1,10 @@
-const MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+ "@" + process.env.mongo_connection_url + "/test?retryWrites=true&w=majority"
-
 module.exports = {
   initialize_site: function (sitename, siteemailaddress) {
     return new Promise((resolve, reject) => {
       require('dotenv').config();
       var MongoClient = require('mongodb').MongoClient;
-      MongoClient.connect(MongoUrl, function(err, db) {
+      var url = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+"@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
+      MongoClient.connect(url, function(err, db) {
         if (err) { db.close(); return; }
         var dbo = db.db("aws_user_accounts");
         dbo.collection("sites").insertOne({ "sitename": sitename, "siteemailaddress": siteemailaddress, site_privileges: [] }, function (err, res) {
@@ -20,6 +19,7 @@ module.exports = {
     require('dotenv').config();
     var ObjectId = require('mongodb').ObjectID;
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+"@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve,reject) => {
       MongoClient.connect(MongoUrl, function(err, db) {
         if (err) { db.close(); reject(err); }
@@ -35,6 +35,7 @@ module.exports = {
   fetch_sites: function() {
     require('dotenv').config();
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       MongoClient.connect(MongoUrl, function (err, db) {
         if (err) { db.close(); reject(err); }
@@ -52,6 +53,7 @@ module.exports = {
     var ObjectId = require('mongodb').ObjectID;
     var obj_ids = ids.map(function(ids) { return ObjectId(ids); });
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       MongoClient.connect(MongoUrl, function (err, db) {
         if (err) { db.close(); reject(err); }
@@ -69,6 +71,7 @@ module.exports = {
     const this_module = require("./modelFunctions.js");
     var ObjectId = require('mongodb').ObjectID;
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+"@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve,reject) => {
       this_module.fetch_user_by_hash_id(user_hash_id).then((mongo_records) => {
         if(mongo_records.length < 1) { reject(); }
@@ -91,6 +94,7 @@ module.exports = {
   fetch_users: function() {
     require('dotenv').config();
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+"@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve,reject) => {
       MongoClient.connect(MongoUrl, function(err, db) {
         if (err) { db.close(); reject(err); }
@@ -108,6 +112,7 @@ module.exports = {
     const this_module = require("./modelFunctions.js");
     var ObjectId = require('mongodb').ObjectID;
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+"@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve,reject) => {
       this_module.fetch_user_by_hash_id(user_hash_id).then((mongo_records) => {
         if(mongo_records.length < 1) { reject(); }
@@ -130,6 +135,7 @@ module.exports = {
   fetch_collaborator_by_email_address: function (collaborator_email_address) {
     require('dotenv').config();
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       MongoClient.connect(MongoUrl, function (err, db) {
         if (err) { db.close(); reject(err); }
@@ -146,6 +152,7 @@ module.exports = {
     require('dotenv').config();
     var MongoClient = require('mongodb').MongoClient;
     var ObjectId = require('mongodb').ObjectID;
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       MongoClient.connect(MongoUrl, function (err, db) {
         if (err) { db.close(); reject(err); }
@@ -162,6 +169,7 @@ module.exports = {
     require('dotenv').config();
     var MongoClient = require('mongodb').MongoClient;
     var ObjectId = require('mongodb').ObjectID;
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       MongoClient.connect(MongoUrl, function (err, db) {
         if (err) { db.close(); reject(err); }
@@ -177,6 +185,7 @@ module.exports = {
   fetch_omni_by_email_address: function (omni_email_address) {
     require('dotenv').config();
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       MongoClient.connect(MongoUrl, function (err, db) {
         if (err) { db.close(); reject(err); }
@@ -200,6 +209,7 @@ module.exports = {
 
     var ObjectId = require('mongodb').ObjectID;
     var MongoClient = require('mongodb').MongoClient;
+    var MongoUrl = "mongodb+srv://"+String(process.env.mongo_db_atlas_uname)+":"+String(process.env.mongo_db_atlas_pword)+"@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve,reject) => {
       MongoClient.connect(MongoUrl, function(err, db) {
         if (err) { db.close(); reject(err); }
@@ -215,6 +225,7 @@ module.exports = {
     var ObjectId = require('mongodb').ObjectID;
     var MongoClient = require('mongodb').MongoClient;
     thisfile = require('./modelFunctions.js');
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       thisfile.fetch_site_by_hash_id(site_id).then((site_record) => {
         if (site_record.length < 1) { reject(); }
@@ -237,6 +248,7 @@ module.exports = {
     var ObjectId = require('mongodb').ObjectID;
     var MongoClient = require('mongodb').MongoClient;
     thisfile = require('./modelFunctions.js');
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       thisfile.fetch_site_by_hash_id(site_id).then((site_record) => {
         if (site_record.length < 1) { reject('No sites found for provided id'); }
@@ -259,6 +271,7 @@ module.exports = {
     var ObjectId = require('mongodb').ObjectID;
     var MongoClient = require('mongodb').MongoClient;
     thisfile = require('./modelFunctions.js');
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       thisfile.fetch_collaborator_by_hash_id(collaborator_mongo_id).then((collaborator_user_record) => {
         if (collaborator_user_record.length < 1) { reject('No matching users found'); }
@@ -281,6 +294,7 @@ module.exports = {
     var ObjectId = require('mongodb').ObjectID;
     var MongoClient = require('mongodb').MongoClient;
     thisfile = require('./modelFunctions.js');
+    var MongoUrl = "mongodb+srv://" + String(process.env.mongo_db_atlas_uname) + ":" + String(process.env.mongo_db_atlas_pword) + "@cluster0-xchfq.mongodb.net/test?retryWrites=true&w=majority";
     return new Promise((resolve, reject) => {
       thisfile.fetch_collaborator_by_hash_id(collaborator_mongo_id).then((collaborator_user_record) => {
         if (collaborator_user_record.length < 1) { reject(); }

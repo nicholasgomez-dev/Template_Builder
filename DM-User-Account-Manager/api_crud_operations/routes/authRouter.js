@@ -6,7 +6,7 @@ auth.post('/credentials', function (req,res) {
     if(!req.body.email_address || !req.body.pword) {
       res.status(400).end(JSON.stringify({ body:"authentication credentials missing" }));
     }
-    request.post({url:process.env.authentication_container_address+'/authenticate', form: req.body }, (err, httpResponse, body) => {
+    request.post({url:config.containers_microservice_ip_address+'/authenticate', form: req.body }, (err, httpResponse, body) => {
       if (err) {
         res.end(JSON.stringify({ status:err }));
       }
@@ -49,13 +49,13 @@ auth.post('/logout', (req, res) => {
 });
 
 auth.post('/refresh-tokens', function(req, res) {
-  console.log('cookie', req.cookies)
+  console.log(req.cookies)
   const config = require("../config.js");
   if (!req.cookies["refresh_token"]){
     res.status(401).send({})
   }
   else{
-    request.post({url:process.env.authentication_container_address+'/refresh_credentials', form: {refreshToken: req.cookies['refresh_token'] }}, (err, httpResponse, body) => {
+    request.post({url:config.containers_microservice_ip_address+'/refresh_credentials', form: {refreshToken: req.cookies['refresh_token'] }}, (err, httpResponse, body) => {
       if (err) { res.status(500).end(JSON.stringify({ body:err })); }
       
       if (httpResponse.statusCode !== 200){
@@ -65,8 +65,9 @@ auth.post('/refresh-tokens', function(req, res) {
         var resjson = JSON.parse(body);
         const options = {
           httpOnly: true,
-          secure: process.env.environment == "prod" ? true : false
+          secure: process.env.production == "true" ? true : false
         }
+
         res.cookie("refresh_token", resjson.body.refresh_token, options)
         res.status(200).send(resjson);
       }

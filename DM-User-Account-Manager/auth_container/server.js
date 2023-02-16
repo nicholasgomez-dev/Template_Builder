@@ -3,7 +3,7 @@ const path = require('path');
 const moment = require('moment');
 const bodyparser = require('body-parser');
 var cookieParser = require('cookie-parser');
-require('dotenv').config()
+
 const app = express()
 const port = 84;
 
@@ -50,7 +50,13 @@ app.post("/decode_jwt", function(req, res) {
   if(!decoded_jwt) { res.status(500); res.end(); }
   res.status(200).end(JSON.stringify({ body:decoded_jwt }));
 });
-
+app.post("/execute_password_reset_via_email", function(req, res) {
+  const auth0Api = require("./auth0Api.js");
+  if(req.body.user_email_address == undefined) { res.status(412); res.end(); }
+  auth0Api.send_reset_pword_to_user(req.body.user_email_address, function(apiResp) {
+    if(apiResp) { res.status(200).end(); } else { res.status(500).end(); }
+  });
+});
 // Authenticate username and password for account information stored in auth0
 // Store the refresh token, id token in server side accessible HTTP cookie, and return the access token to the client via HTTP response
 app.post('/authenticate', function(req, res) {

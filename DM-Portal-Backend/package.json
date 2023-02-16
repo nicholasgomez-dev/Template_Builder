@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env node app.js",
     "dev": "cross-env PORT=3000 DEV=true nodemon app.js",
-    "localhost": "cross-env PORT=5000 DEV=true nodemon app.js",
+    "localhost": "cross-env PORT=8080 DEV=true nodemon app.js",
     "server": "cross-env node app.js"
   },
   "repository": {

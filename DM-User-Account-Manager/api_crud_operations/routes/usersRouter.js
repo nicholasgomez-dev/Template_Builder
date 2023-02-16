@@ -4,7 +4,7 @@ const modelFunctions = require("../nodejs/modelFunctions.js");
 const request = require("request");
 users.post('/initialize-user', function (req, res) {
     const request = require("request");
-    request.post({ url:process.env.authentication_container_address+'/create_user', form: req.body }, (err, httpResponse, body) => {
+    request.post({ url:config.containers_microservice_ip_address+'/create_user', form: req.body }, (err, httpResponse, body) => {
       if (err) { res.status(500).end(JSON.stringify({ body:err })); }
       res.status(200).end(JSON.stringify({ body:body }));
     });
@@ -56,7 +56,7 @@ users.put('/:uid', function(req, res) {
 users.post("/initialize_password_reset_email", function (req, res) {
   if(req.body.user_hash_id == undefined) { res.status(412).end(); }
   modelFunctions.fetch_user_by_hash_id(req.body.user_hash_id).then((ur)=>{
-    request.post({ url:process.env.authentication_container_address+'/execute_password_reset_via_email', form: {"user_email_address":ur[0]["email_address"]} }, (err, httpResponse, body) => {
+    request.post({ url:config.containers_microservice_ip_address+'/execute_password_reset_via_email', form: {"user_email_address":ur[0]["email_address"]} }, (err, httpResponse, body) => {
       if (err) { res.status(500).end(JSON.stringify({ body:err })); }
       res.status(200).end(JSON.stringify({ body:body }));
     });

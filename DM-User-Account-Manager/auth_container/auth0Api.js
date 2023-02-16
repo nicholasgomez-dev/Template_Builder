@@ -74,7 +74,7 @@ module.exports = {
     });
     // data to send to auth0 server
     var data = {
-      clientId: String(process.env.auth0ClientId),
+      clientId: 'lmo9vMu1ba6tcWg95dUqPlYIvQoBv4Vr',
       email: String(emailParam),
       password: String(pwordParam),
       connection: 'Username-Password-Authentication'
