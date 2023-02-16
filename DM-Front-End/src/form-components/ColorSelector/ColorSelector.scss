@@ -1,0 +1,48 @@
+.color {
+    &-root {
+        margin-top: 0px;
+        margin-bottom: 20px;
+        width: 50%;
+        display: inline-block;
+    }
+
+    &-title {
+        font-size: 20px;
+        margin-bottom: 0;
+    }
+
+    &-description {
+        font-size: 12px;
+        min-height: 12px;
+    }
+
+    &-text {
+        width: 60%;
+        height: 500px;
+    }
+
+    &-flex {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    &-hex {
+        margin-left: 15px;
+        font-size: 18px;
+    }
+
+    &-button {
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        background-color: white;
+        margin-left: 10px;
+    }
+}
+
+// overwrites color picker css
+.rc-color-picker-trigger {
+    height: 30px !important;
+    width: 30px !important;
+}

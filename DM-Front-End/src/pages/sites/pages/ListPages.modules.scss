@@ -1,0 +1,50 @@
+@import '../../../styles/app';
+
+.bootstrapTable {
+  border: none;
+
+  :global .table {
+    thead,
+    tbody {
+      th,
+      td {
+        border-right: none;
+        border-left: none;
+      }
+    }
+
+    thead th {
+      background: transparent;
+    }
+
+  }
+}
+
+.react-bs-table .react-bs-container-footer > table > thead > tr > th, .react-bs-table .react-bs-container-header > table > thead > tr > th {
+  border: none;
+  background: $blue;
+  color: $gray-100;
+}
+
+.ReactTable .rt-thead.-filters {
+  border: none;
+}
+
+.ReactTable .rt-thead .rt-tr {
+  background: $blue;
+  color: $gray-100;
+}
+
+.card-columns {
+  column-count: 3;
+  @media (max-width: 1200px) {
+      column-count: 2;
+  }
+  @media (max-width: 700px) {
+      column-count: 1;
+  }
+}
+img {
+  width: 100%;
+  height: auto;
+}

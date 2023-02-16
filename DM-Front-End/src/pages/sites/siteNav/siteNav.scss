@@ -1,0 +1,43 @@
+.rst__rowContents {
+    cursor: pointer;
+}
+.rst__rowWrapper {
+    padding: 2px 5px 4px 0
+}
+.nodeIsSelected {
+    // background-color: rgb(134, 134, 134);
+
+    box-shadow: 0 2px 2px -2px rgb(209, 209, 209);
+    .rst__rowContents {
+        color: black;
+        border: 1px solid rgb(167, 167, 167);
+        border-radius: 0 0.3rem 0.3rem 0 !important;
+        background-color: rgb(211, 211, 211);
+
+    }
+}
+.button-container {
+    display: flex;
+    max-width: 1500px;
+    margin: 0 auto;
+    > :first-child{
+        margin-right: 50px;
+    }
+    :last-child {
+        margin-left: auto;
+    }
+
+    div {
+
+        button {
+            margin-right:5px;
+        }
+    }
+}
+.tooltipBtnWrapper {
+    display: inline-block;
+    
+    button.disabled {
+        pointer-events: none;
+    }
+}

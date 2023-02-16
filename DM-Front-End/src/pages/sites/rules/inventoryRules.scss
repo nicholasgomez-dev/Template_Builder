@@ -1,0 +1,390 @@
+/*.btn, .dropdown-item, a {
+    cursor: pointer;
+    -webkit-transition: color .1s ease-in-out,background-color .1s ease-in-out,border-color .1s ease-in-out;
+    transition: color .1s ease-in-out,background-color .1s ease-in-out,border-color .1s ease-in-out;
+    font-family: Montserrat,sans-serif;
+}
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.375rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.3rem;
+    -webkit-transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.btn-blue, .btn-info, .btn-info:hover, .btn-success, .btn-success:hover, .btn-warning, .btn-warning:hover {
+    color: #fff;
+}
+.btn-success {
+    color: #fff;
+    background-color: #21ae8c;
+    border-color: #21ae8c;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.149), 0 1px 1px rgba(0, 0, 0, 0.08);
+	border: none;
+    border-radius: 3px;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #21ae8c;
+    border-color: #21ae8c;
+}
+.btn-success:hover {
+    color: #fff;
+    background-color: #1b8e72;
+    border-color: #19836a;
+}
+
+.btn-default {
+    color: #29323a;
+    background-color: #e9ecef;
+    border-color: #e9ecef;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.149), 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+.btn-default {
+    border-color: #c1ccd3;
+    color: #3c484f;
+}
+
+.btn-default:hover {
+    color: #29323a;
+    background-color: #d3d9df;
+    border-color: #cbd3da;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #fd5f00;
+    border-color: #fd5f00;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.149), 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+.btn-danger:hover {
+    color: #fff;
+    background-color: #d75100;
+    border-color: #ca4c00;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #c1ccd3;
+    border-radius: 0.3rem;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.08);
+    -webkit-transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-control {
+    font-family: Montserrat,sans-serif;
+    -webkit-transition: border-color .15s ease-in-out,background-color .15s ease-in-out;
+    transition: border-color .15s ease-in-out,background-color .15s ease-in-out;
+}
+
+.form-control, .form-control:focus {
+    box-shadow: none;
+}*/
+
+.inputDropdown {
+    min-width: 180px;
+    border: 1px solid rgba(0,0,0,.25);
+    border-radius: 5px;
+    height: 36px;
+    display: block;
+	padding-left: 5px;
+	font-size: 1rem;
+}
+
+.inputTextModule {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(0,0,0,.25);
+	max-width: 300px;
+}
+
+ul#allLists {
+    list-style: none;
+    padding-left: 0;
+}
+
+/*
+ul.rule-inc-crit {
+    list-style: none;
+	display: flex;
+    justify-content: space-between;
+    width: calc(100% - 160px);
+    padding-left: 0;
+	flex-wrap: wrap;
+	overflow: auto;
+    max-height: 100%;
+	height: 100%;
+}*/
+
+ul.rule-inc-crit {
+    list-style: none;
+    width: calc(100% - 160px);
+    padding-left: 0;
+    overflow: auto;
+    max-height: 100%;
+}
+
+li.rule {
+    display: flex;
+    justify-content: space-between;
+}
+
+#card {
+    background-color: white;
+    padding: 1rem 1rem;
+    width: calc(100% - 4rem);
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.149);
+    margin: 1rem;
+	
+}
+
+#dealer-select {
+    background-color: white;
+    padding: 1rem 2rem;
+    width: calc(100% - 4rem);
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.149);
+    margin: 1rem;
+	
+}
+
+.button-row {
+    width: 160px;
+    display: flex;
+    align-items: flex-end;
+    align-content: flex-end;
+    flex-direction: column;
+    height: 100%;
+    justify-content: flex-start;
+	margin-top: 1.24rem;
+}
+
+.button-row > button {
+    width: 120px;
+    margin-bottom: 0.5rem;
+}
+.button-row > a {
+    width: 120px;
+    margin-bottom: 0.5rem;
+}
+p.header {
+    font-weight: 600;
+}
+.crit p, .effect p {
+	margin:0;
+	font-size: 1rem;
+	text-align: left;
+}
+
+li.crit {
+    padding-right: 1rem;
+	margin-bottom: 1rem;
+	/*flex-basis: calc(50% - 1rem);*/
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.crit > div {
+    width: calc(50% - 1rem);
+}
+
+li.effect {
+    flex-basis: 100%;
+	padding-right: 1rem;
+}
+
+.rule-name {
+    font-weight: 700;
+    text-transform: uppercase;
+	cursor: pointer;
+	position: relative;
+	width: calc(100% - 1rem - 30px);
+	padding: 1rem 0 1rem;
+    margin-bottom: 0;
+	font-size: 1.33rem;
+	transition: 0.5s;
+	padding-right: 25px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.rule-detail.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-content: stretch;
+    flex-wrap: nowrap;
+	border-bottom: 1px solid rgba(0,0,0,0.2);
+	padding-bottom: 1rem;
+    width:100%;
+}
+
+.accordion .container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
+
+.accordion .label::before {
+  content: '▼';
+  color: black;
+  position: absolute;
+  right: 0.5rem;
+  transform: scale(1,.4);
+  font-size: 2rem;
+}
+
+.accordion .content {
+  position: relative;
+  height: 0;
+  font-size: 20px;
+  text-align: justify;
+  overflow: hidden;
+  transition: 0.5s;
+  padding: 0;
+}
+.accordion .container.active .content {
+  height: 150px;
+  padding-bottom: 1rem;
+  
+}
+.accordion .container.active .label {
+	padding-bottom: 1rem;
+    margin-bottom: 0;
+}
+.accordion .container.active .label::before {
+  content: '▲';
+  margin-top: -3px;
+}
+span.rule-order {
+    margin-right: 1rem;
+    border: 1px solid;
+    border-bottom: 1px solid;
+    border-color: rgba(0, 0, 0, 0.2);
+    padding: 1px 0px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+}
+button.addRule {
+    float: right;
+}
+
+#card h2 {
+    padding: 0rem 1rem;
+}
+
+li.rule.container {
+    padding: 0rem 1rem;
+}
+
+/* (B) DRAG-AND-DROP HINT */
+.hint {
+  background: red;
+}
+.activeSort {
+  background: #d5e9f7;
+}
+#orderChange {
+    margin: 0 auto;
+    display: block;
+}
+button#orderChange[disabled=true], button#modalSave[disabled=true]  {
+    opacity: 0.5;
+}
+button#orderChange[disabled=true]:hover, button#modalSave[disabled=true]:hover {
+    background-color: #21ae8c;
+	cursor: not-allowed;
+}
+
+.button-row > button.btn-danger {
+    color: #fff;
+    background-color: #FD5F00;
+    border-color: #FD5F00;
+}
+
+.button-row > button.btn-danger:hover {
+    color: #fff;
+    background-color: #d75100;
+    border-color: #ca4c00;
+}
+
+@media (max-width : 600px) {
+.rule-detail.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+
+ul.rule-inc-crit {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.button-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    align-content: flex-end;
+    margin-top: 0px;
+	height: 25%;
+}
+
+.accordion .container.active .rule-detail.content {
+    height: 200px;
+}
+
+.button-row > button {margin-bottom: 0.56rem;}
+
+ul.rule-inc-crit {
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-start;
+}
+}
+
+@media (max-width : 400px) {
+	#card h2 span {
+		display: block;
+	}
+	button.addRule.btn.btn-default {
+		margin: 1rem auto 0;
+		display: block;
+		width: 100%;
+	}
+}

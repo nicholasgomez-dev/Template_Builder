@@ -1,0 +1,102 @@
+@import '../../styles/app';
+
+.array {
+    &-cont {
+        margin-top: 0px;
+        margin-bottom: 40px;
+        //padding: 30px 50px;
+        background-color: white;
+        //box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+        //border: 1px solid;
+        overflow: auto;
+    }
+
+    &-compCont {
+        padding: 30px;
+        border: 1px solid rgba(0,0,0,0.25);
+        min-width: 30%;
+    }
+
+    &-button {
+        float: right;
+    }
+
+    &-padd {
+        margin-top: 30px;
+    }
+
+    &-modal-text {
+        padding-bottom: 5px;
+        padding-top: 10px;
+    }
+
+    &-tabParent {
+        border: 1px solid rgba(0,0,0,0.25);
+        width: 50px;
+        margin-right: 10px;
+    }
+
+    &-tabCont {
+        padding: 10px;
+    }
+
+    &-addButton {
+        padding: 10px;
+    }
+
+    &-tabParentButton {
+        border: 1px solid rgba(0,0,0,0.25);
+        width: 100px;
+    }
+
+    &-tabText {
+        text-align: center;
+    }
+
+    &-render {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    &-components {
+        margin-top: 10px;
+    }
+}
+
+.selected {
+    background-color: $blue;
+    border-color: $blue;
+    color: white;
+}
+
+.tabsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.array-cont{
+    grid-column: span 12;
+}
+
+.array-button{
+    grid-column-start: 11;
+    grid-column-end: 12;
+}
+
+.array-title {
+    font-size: 20px;
+}
+
+.array-description {
+    font-size: 12px;
+}
+
+.duplicate-button{
+    color:#ffffff;
+    margin-right:5px;
+}

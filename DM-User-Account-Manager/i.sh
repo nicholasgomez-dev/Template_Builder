@@ -1,0 +1,1 @@
+curl --header "Content-Type: application/json" --request POST --data '{"access_token":"A9D9PYfZZvK_A2zag_Mi2ypIl-pmr0QI","sitename":"topcarsales22","siteemailaddress":"orangejuice211@mxssolutions.com"}' http://3.131.135.22/sites/initialize-site

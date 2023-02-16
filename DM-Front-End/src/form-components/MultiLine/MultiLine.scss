@@ -1,0 +1,24 @@
+
+.multiLineTitleContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.multiLineTitle {
+    font-size: 20px;    
+
+}
+
+.multiLineDescription {
+    font-size: 12px;
+}
+
+.multiLineModule {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(0,0,0,0.25);
+    display: block;
+}

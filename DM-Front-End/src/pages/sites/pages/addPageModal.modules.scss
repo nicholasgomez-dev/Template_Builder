@@ -1,0 +1,39 @@
+@import '../../../styles/app';
+
+
+.pageModal {
+
+    @media screen and (min-width: 600px){
+        max-width: 1600px;
+       width: 80%;
+    }
+
+}
+.pageCard {
+    min-height: 140px;
+    box-shadow: 0px 2px 5px 0 rgba(0,0,0,0.2);
+    &:hover {
+        box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2);
+    }
+    cursor: pointer;
+}
+.selectedColor {
+    // color: 
+    background-color:$teal;
+}
+.isSelected {
+    outline: 3px solid $teal;
+}
+.lg-check {
+    font-size:20px
+}
+
+.row{
+    margin-right: -15px;
+    margin-left: -15px;
+
+}
+
+.card {
+    border-radius: 2px;
+}

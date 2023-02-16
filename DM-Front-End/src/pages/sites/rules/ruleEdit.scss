@@ -1,0 +1,304 @@
+.inputDropdown {
+    min-width: 180px;
+    border: 1px solid rgba(0,0,0,.25);
+    border-radius: 5px;
+    height: 36px;
+    display: block;
+	padding-left: 5px;
+	font-size: 1rem;
+}
+
+.inputTextModule {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(0,0,0,.25);
+	max-width: 300px;
+}
+
+#title, #includes, #excludes, #affected, #change {
+    background-color: #ffffff;
+    padding: 1rem;
+	margin: 1rem 0;
+	box-shadow: 2px 3px 3px rgba(0,0,0,0.15)
+}
+#ruleName {
+    margin-bottom:2rem;
+}
+#includes > h3 > button, #excludes > h3 > button {
+	float: right;
+}
+#includes-cont, #excludes-cont {
+	display: flex;
+    flex-direction: column;
+}
+
+ul#affected-list {
+    border: 1px solid rgba(0,0,0,.25);
+    overflow: auto scroll;
+    min-height: 100px;
+    max-height: 150px;
+    list-style: none;
+    padding-left: 0rem;
+}
+
+li.affected-vehicle {
+    padding: 0.25rem 0.5rem;
+}
+li.affected-vehicle:nth-child(2n) {
+    background-color: #f0f0f0;
+}
+
+.updates {
+    display: flex;
+    padding: 1rem 0;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap;
+}
+.remove-row {
+    font-size: 0.95rem;
+    padding: 0 0.75rem;
+	height: 36px;
+    margin-top: 5px;
+	margin-right: 20px;
+}
+.toprow {
+    display: flex;
+    width: 100%;
+}
+
+.bottomRow {
+    width: calc(100% - 15px);
+    padding: 5px 10px 5px 0px;
+    display:  flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.add-subcrit {
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.rule-include, .rule-exclude {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	align-content: center;
+}
+.row-cont {
+    padding: 5px 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    align-content: center;
+	width: 100%;
+}
+
+.field, .compareType {
+    width: 33%;
+}
+
+.value {
+	width: 300px;
+}
+#changesList {
+	display: flex;
+	justify-content: space-between;
+}
+#changesList > .inputDropdown {
+    width: calc(50% - 5px);
+}
+.sub-options {
+	display: none;
+}
+.change-field {
+    display: none;
+    padding: 5px;
+    width: calc(50% - 10px); 
+}
+.change-field > label {
+    padding-bottom: 5px;
+    display: block;
+}
+.change-field > input {
+    width: 100%;
+    max-width: none;
+	height: 36px;
+}
+
+.criteria-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+	margin-bottom: 5px;
+}
+
+.subcriteria-list {
+    width: calc(66.66% + 100px);
+}
+
+button.remove-criteria {
+    padding: 8px 10px;
+}
+
+label.criteria-header {
+    margin: 5px 5px 5px 10px;
+}
+
+.subcriteria-field, .subcriteria-compareType, .subcriteria-value {
+    margin: 0 5px;
+}
+
+.subcriteria-value {
+    margin-right: 0;
+}
+
+#field-list {
+    max-height: 600px;
+    overflow: auto;
+}
+
+.enable-include {
+    width: 99%;
+    padding: 5px 0;
+	margin-bottom: 2px;
+}
+
+.enable-include > input[type="checkbox"] {
+    float: left;
+    margin: 5px 0 0 0.66rem;
+}
+
+.item {
+	margin-bottom: 5px;
+	display:none;
+}
+
+.item > label {
+	display: block; margin-bottom: 5px;
+}
+
+.item > select, .item > input {
+	display: inline-block;
+	width: 49%;
+}
+
+.item > input {
+	float: right;
+}
+
+#includes-cont .row-cont {
+    display: flex;
+    justify-content: space-between;
+}
+
+#includes-cont .bottomRow {
+    padding-right: 0;
+    width: 100%;
+}
+
+#includes-cont .field, #includes-cont .compareType {
+    width: calc(33% - 18px)
+}
+
+#includes-cont .buffer {
+    display: inline-block;
+    width: 60px;
+    margin-right: 20px;
+}
+
+button#update[disabled=true] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+@media (max-width : 1200px) {
+    .toprow > .row-cont > select, .toprow > .row-cont > input {
+        width: calc(33.33% - 18px);
+    }
+    .subcriteria-list {
+        width: calc(100% - 60px);
+    }
+}
+@media (max-width : 800px) {
+    .buffer {
+        display:none;
+    }
+	#includes-cont, #excludes-cont {
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	.row-cont {
+		display: flex;
+	    flex-direction: column;
+		width: auto;
+		padding-left: 5px;
+	}
+	.field, .compareType {
+		width: 100%;
+	}
+	.row-cont > * {
+    margin-bottom: 5px;
+	}
+	.row-cont > *:last-child {
+	margin-bottom: 0;
+	}
+	.remove-row {
+		height: 118px;
+	}
+    .toprow > .row-cont > select, .toprow > .row-cont > input {
+        width: 100%;
+    }
+    
+    .row-cont {
+        width: 100%;
+    }
+    
+    .toprow > .remove-row {
+        margin-right: 5px;
+    }
+    
+    #includes-cont .field, #includes-cont .compareType {
+        width: 100%;
+    }
+    
+    .bottomRow > .subcriteria-list {
+        width: 100%;
+    }
+    
+    .rule-include > .bottomRow > .subcriteria-list {
+        padding-left: 5px;
+    }
+    
+    .rule-exclude > .bottomRow {
+        width: 100%;
+        padding-right: 0;
+    }
+    
+    .inputTextModule {
+        max-width: none;
+    }
+}
+
+@media (max-width : 768px) { 
+	#includes-cont, #excludes-cont {
+		flex-direction: column;
+	}
+	.row-cont {
+		width: 100%;
+	}
+	.row-cont > input {
+		max-width: none;
+		width: 100%;
+	}
+}

@@ -1,0 +1,41 @@
+{
+  "name": "portal-backend",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000p\u0000o\u0000r\u0000t\u0000a\u0000l\u0000-\u0000b\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env node app.js",
+    "dev": "cross-env PORT=3000 DEV=true nodemon app.js",
+    "localhost": "cross-env PORT=5000 DEV=true nodemon app.js",
+    "server": "cross-env node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MXS-Solutions/portal-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MXS-Solutions/portal-backend/issues"
+  },
+  "homepage": "https://github.com/MXS-Solutions/portal-backend#readme",
+  "dependencies": {
+    "aws-sdk": "^2.828.0",
+    "axios": "^0.21.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
+    "crypto": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "flat": "^5.0.2",
+    "form-data": "^3.0.0",
+    "formidable": "^1.2.2",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.3",
+    "path": "^0.12.7",
+    "querystring": "^0.2.0"
+  }
+}
