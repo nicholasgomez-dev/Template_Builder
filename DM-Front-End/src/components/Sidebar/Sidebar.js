@@ -80,7 +80,7 @@ class Sidebar extends React.Component {
             // check if site_id is a valid Mongodb object ID
             isMatch =  /^[0-9A-F]{24}$/i.test(site_id.toString());
         }
-	if (JSON.parse(localStorage.getItem('user-data')).dm_user_type == 'omni') {
+	
         return (
             
             <div className={`${(!this.props.sidebarOpened && !this.props.sidebarStatic) ? s.sidebarClose : ''} ${s.sidebarWrapper}`}>
@@ -89,170 +89,110 @@ class Sidebar extends React.Component {
                     className={s.root}
                 >
                     <header className={s.logo}>
-                        <a href="/">{/*<img src="https://dealermasters.com/img/logo-dm.png"/>*/}<span className={s.logoStyle}>DM</span></a>
+                        <a href="/">{/*<img src="https://dealermasters.com/img/logo-dm.png"/>*/}<span className={s.logoStyle}>TB</span></a>
                     </header>
                     <ul className={s.nav}>
                         
                         <LinksGroup
                             onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
                             activeItem={this.props.activeItem}
-                            header="Dashboard"
+                            header="Templates"
                             isHeader
-                            iconName="flaticon-home"
+                            iconName="flaticon-file-1"
                             link="/app/main"
                             index="main"
                             exact={true}
                             childrenLinks={[
                                 {
-                                    header: 'Sites', link: '/app/main/sites', exact: true
+                                    header: 'Create Templates', link: '/app/main/sites', exact: true
                                 },
                                 {
-                                    header: 'Create Site', link: '/app/main/sites/create',
-                                }
-                            ]}
-                />
-                 {isMatch ?  (
-                        
-                        <LinksGroup
-                            onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-                            activeItem={this.props.activeItem}
-                            header="Site"
-                            isHeader
-                            iconName="flaticon-cloud"
-                            link={`/app/main/sites/${pathMatch.params.site_id}`}
-                            index={`site`}
-                            exact={true}
-                            childrenLinks={[
-                                {
-                                    header: 'Welcome', link: `/app/main/sites/${pathMatch.params.site_id}/landing`,
+                                    header: 'Build Template', link: '/app/main/sites/create',
                                 },
                                 {
-                                    header: 'Admin', link: `/app/main/sites/${pathMatch.params.site_id}/admin`,
-                                },
-                                {
-                                    header: 'Pages', link: `/app/main/sites/${pathMatch.params.site_id}/pages`,
-                                },
-                                {
-                                    header: 'Settings', link: `/app/main/sites/${pathMatch.params.site_id}/settings`,
-                                },
-                                {
-                                    header: 'Navigation', link: `/app/main/sites/${pathMatch.params.site_id}/navigation`,
-                                },
-                                {
-                                    header: 'Inventory', link: `/app/main/sites/${pathMatch.params.site_id}/inventory`
-                                },
-                                {
-                                    header: 'Analytics', link: `/app/main/sites/${pathMatch.params.site_id}/analytics`,
+                                    header: 'View Templates', link: '/app/main/sites/create',
                                 }
                             ]}
                         />
-                        ) : ''}
-                        {isMatch ?  (
-                        <>
-                            <LinksGroup
-                                onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-                                activeItem={this.props.activeItem}
-                                header="Rules"
-                                isHeader
-                                iconName="flaticon-notebook"
-                                link={`/app/main/sites/${pathMatch.params.site_id}/`}
-                                index={`site`}
-                                exact={true}
-                                childrenLinks={[
-                                    {
-                                        header: 'Inventory Rules', link: `/app/main/sites/${pathMatch.params.site_id}/rules`,
-                                    }
-                                ]}
-                            />
-                        </>
-                        ) : ''}
-			<LinksGroup
+
+                        <LinksGroup
                             onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
                             activeItem={this.props.activeItem}
-                            header="User Management"
+                            header="Dealers"
                             isHeader
-                            iconName="flaticon-user"
-                            link="/admin"
-                            index="admin"
-                            exact={false}
+                            iconName="flaticon-briefcase"
+                            link="/app/main"
+                            index="main"
+                            exact={true}
                             childrenLinks={[
                                 {
-                                    header: 'Users', link: '/admin/users',
+                                    header: 'Create Dealers', link: '/app/main/sites', exact: true
                                 },
                                 {
-                                    header: 'Add User', link: '/admin/users/new',
-                                },
+                                    header: 'View Dealers', link: '/app/main/sites/create',
+                                }
                             ]}
-                        />	
+                        />
+
+                        <LinksGroup
+                            onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
+                            activeItem={this.props.activeItem}
+                            header="Variables"
+                            isHeader
+                            iconName="flaticon-settings-4"
+                            link="/app/main"
+                            index="main"
+                            exact={true}
+                            childrenLinks={[
+                                {
+                                    header: 'Create Variables', link: '/app/main/sites', exact: true
+                                },
+                                {
+                                    header: 'View Variables', link: '/app/main/sites/create',
+                                }
+                            ]}
+                        />
+
+                        <LinksGroup
+                            onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
+                            activeItem={this.props.activeItem}
+                            header="Settings"
+                            isHeader
+                            iconName="flaticon-controls"
+                            link="/app/main"
+                            index="main"
+                            exact={true}
+                            childrenLinks={[
+                                {
+                                    header: 'Add OEM', link: '/app/main/sites', exact: true
+                                },
+                                {
+                                    header: 'View OEMs', link: '/app/main/sites/create',
+                                },
+                                {
+                                    header: 'Add Platform', link: '/app/main/sites', exact: true
+                                },
+                                {
+                                    header: 'View Platforms', link: '/app/main/sites/create',
+                                }
+                            ]}
+                        />
+
+                        <LinksGroup
+                            onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
+                            activeItem={this.props.activeItem}
+                            header="Go Back to DM"
+                            isHeader
+                            iconName="flaticon-home"
+                            link="/app/main"
+                            index="main"
+                            exact={true}
+                        />
 
                     </ul>
                 </nav >
             </div>
         );
-	} else {
-        return (
-            <div className={`${(!this.props.sidebarOpened && !this.props.sidebarStatic) ? s.sidebarClose : ''} ${s.sidebarWrapper}`}>
-                <nav
-                    onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}
-                    className={s.root}
-                >
-                    <header className={s.logo}>
-                        <a href="/">{/*<img src="https://dealermasters.com/img/logo-dm.png"/>*/}<span className={s.logoStyle}>DM</span></a>
-                    </header>
-                    <ul className={s.nav}>
-                        <LinksGroup
-                            onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-                            activeItem={this.props.activeItem}
-                            header="Dashboard"
-                            isHeader
-                            iconName="flaticon-home"
-                            link="/app/main"
-                            index="main"
-                            childrenLinks={[
-                                {
-                                    header: 'Dashboard', link: '/app/main/sites',
-                                }
-                            ]}
-                        />
-                        
-                        {isMatch ?  (
-                        
-                        <LinksGroup
-                            onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-                            activeItem={this.props.activeItem}
-                            header="Site"
-                            isHeader
-                            iconName="flaticon-internet"
-                            link={`/app/main/sites/${pathMatch.params.site_id}`}
-                            index={`/app/main/sites/${pathMatch.params.site_id}`}
-                            exact={false}
-                            childrenLinks={[
-                                {
-                                    header: 'Welcome', link: `/app/main/sites/${pathMatch.params.site_id}/landing`,
-                                },
-                                {
-                                    header: 'Pages', link: `/app/main/sites/${pathMatch.params.site_id}/pages`,
-                                },
-                                {
-                                    header: 'Settings', link: `/app/main/sites/${pathMatch.params.site_id}/settings`,
-                                },
-                                {
-                                    header: 'Navigation', link: `/app/main/sites/${pathMatch.params.site_id}/navigation`,
-                                },
-                                {
-                                    header: 'Inventory', link: `/app/main/sites/${pathMatch.params.site_id}/inventory`
-                                },
-                                {
-                                    header: 'Analytics', link: `/app/main/sites/${pathMatch.params.site_id}/analytics`,
-                                }
-                            ]}
-                        />
-                        ) : ''}
-                    </ul>
-                </nav >
-            </div>
-        );
-	}
     }
 }
 
