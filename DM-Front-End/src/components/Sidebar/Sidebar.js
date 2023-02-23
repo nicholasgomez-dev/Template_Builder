@@ -156,31 +156,6 @@ class Sidebar extends React.Component {
                         <LinksGroup
                             onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
                             activeItem={this.props.activeItem}
-                            header="Settings"
-                            isHeader
-                            iconName="flaticon-controls"
-                            link="/app/main"
-                            index="main"
-                            exact={true}
-                            childrenLinks={[
-                                {
-                                    header: 'Add OEM', link: '/app/main/sites', exact: true
-                                },
-                                {
-                                    header: 'View OEMs', link: '/app/main/sites/create',
-                                },
-                                {
-                                    header: 'Add Platform', link: '/app/main/sites', exact: true
-                                },
-                                {
-                                    header: 'View Platforms', link: '/app/main/sites/create',
-                                }
-                            ]}
-                        />
-
-                        <LinksGroup
-                            onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-                            activeItem={this.props.activeItem}
                             header="Go Back to DM"
                             isHeader
                             iconName="flaticon-home"

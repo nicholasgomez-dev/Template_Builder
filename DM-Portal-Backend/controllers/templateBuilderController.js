@@ -1,12 +1,10 @@
 const { readAllDocuments } = require('../utility/dbFunctions/dbUtilities');
 require('dotenv').config();
 
-// Build the connection string
-const MongoUri = 'mongodb+srv://test-user:ok7xNR8z8l2DN2MR@contentsentry2.nc7ol.mongodb.net/Template_Builder?retryWrites=true&w=majority'
-
 module.exports = {
+    // Template Controllers
     getAllTemplates: (req, res) => {
-        readAllDocuments('Template_Builder', 'Templates', {}, {}, MongoUri)
+        readAllDocuments('Template_Builder', 'Templates', {}, {}, process.env.TB_MONGO_URI)
             .then(result => {
                 res.json(result)
             })
@@ -14,5 +12,38 @@ module.exports = {
                 console.log(err)
                 res.json(err)
             })
+    },
+    // Dealer Controllers
+    getAllDealers: (req, res) => {
+        readAllDocuments('Template_Builder', 'Dealers', {}, {}, process.env.TB_MONGO_URI)
+        .then(result => {
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
+    },
+    // Variable Controllers
+    getAllVariables: (req, res) => {
+        readAllDocuments('Template_Builder', 'Variables', {}, {}, process.env.TB_MONGO_URI)
+            .then(result => {
+                res.json(result)
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
+    },
+    // History Controllers
+    getAllHistory: (req, res) => {
+        readAllDocuments('Template_Builder', 'History', {}, {}, process.env.TB_MONGO_URI)
+        .then(result => {
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
     }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import axios from 'axios';
+import API from '../../../actions/portalAPI';
 import Loader from "../../../components/Loader";
-import TableContainer from '../../analytics/components/TableContainer/TableContainer';
+import DealersTable from './DealersTable';
 
 const ListDealers = () => {
     const [loading, setLoading] = useState(true);
@@ -9,7 +9,7 @@ const ListDealers = () => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        axios.get('/api/templates')
+        API.get('/api/templatebuilder/dealers/')
             .then(res => {
                 setDealers(res.data);
                 setLoading(false);
@@ -27,7 +27,8 @@ const ListDealers = () => {
             {
                 loading ? <Loader size={75} /> 
                 : error ? <p>Something went wrong please try again later.</p>
-                : <TableContainer data={dealers} />
+                : (dealers.length === 0) ? <p>No dealers found.</p>
+                : <DealersTable dealers={dealers} />
             }
         </Fragment>
     )

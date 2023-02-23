@@ -11,7 +11,6 @@ const ListTemplates = () => {
     useEffect(() => {
         API.get('/api/templatebuilder/templates/')
             .then(res => {
-                console.log(res.data)
                 setTemplates(res.data);
                 setLoading(false);
             })
@@ -28,7 +27,8 @@ const ListTemplates = () => {
             {
                 loading ? <Loader size={75} /> 
                 : error ? <p>Something went wrong please try again later.</p>
-                : <p>Data found.</p>
+                : (templates.length === 0) ? <p>No templates found.</p>
+                : <TemplatesTable templates={templates} />
             }
         </Fragment>
     )

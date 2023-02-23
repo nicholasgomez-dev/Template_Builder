@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import axios from 'axios';
+import API from '../../../actions/portalAPI';
 import Loader from "../../../components/Loader";
-import TableContainer from '../../analytics/components/TableContainer/TableContainer';
+import VariablesTable from './VariablesTable';
 
 const ListVariables = () => {
     const [loading, setLoading] = useState(true);
@@ -9,7 +9,7 @@ const ListVariables = () => {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        axios.get('/api/templates')
+        API.get('/api/templatebuilder/variables/')
             .then(res => {
                 setVariables(res.data);
                 setLoading(false);
@@ -27,7 +27,8 @@ const ListVariables = () => {
             {
                 loading ? <Loader size={75} /> 
                 : error ? <p>Something went wrong please try again later.</p>
-                : <TableContainer data={variables} />
+                : (variables.length === 0) ? <p>No variables found.</p>
+                : <VariablesTable variables={variables} /> 
             }
         </Fragment>
     )

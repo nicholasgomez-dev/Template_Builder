@@ -1,20 +1,20 @@
 import React, { Fragment } from 'react'
 import { Row, Col, Badge, Card, CardBody, CardTitle, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
 
-const TemplatesTable = (props) => {
-    const { templates } = props
+const DealersTable = (props) => {
+    const { dealers } = props
     
-    const TemplateCard = (props) => {
-        const { template } = props
+    const DealerCard = (props) => {
+        const { dealer } = props
 
         return (
             <Card>
                 <CardTitle>
-                    <h4>{template.name}</h4>
+                    <h4>{dealer.name}</h4>
                 </CardTitle>
                 <CardBody>
                     <CardText>
-                        <p>{template.description}</p>
+                        <p>{dealer.description}</p>
                     </CardText>
                 </CardBody>
             </Card>
@@ -24,10 +24,10 @@ const TemplatesTable = (props) => {
     return (
         <Fragment>
             <CardColumns>
-                {templates.map((template, index) => <TemplateCard key={index} template={template}/>)}
+                {dealers.map((dealer, index) => <DealerCard key={index} dealer={dealer}/>)}
             </CardColumns>
         </Fragment>
     )
 }
 
-export default TemplatesTable;
+export default DealersTable;

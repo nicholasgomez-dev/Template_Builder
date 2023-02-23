@@ -1,20 +1,20 @@
 import React, { Fragment } from 'react'
 import { Row, Col, Badge, Card, CardBody, CardTitle, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
 
-const TemplatesTable = (props) => {
-    const { templates } = props
+const VariablesTable = (props) => {
+    const { variables } = props
     
-    const TemplateCard = (props) => {
-        const { template } = props
+    const VariableRow = (props) => {
+        const { variable } = props
 
         return (
             <Card>
                 <CardTitle>
-                    <h4>{template.name}</h4>
+                    <h4>{variable.name}</h4>
                 </CardTitle>
                 <CardBody>
                     <CardText>
-                        <p>{template.description}</p>
+                        <p>{variable.description}</p>
                     </CardText>
                 </CardBody>
             </Card>
@@ -24,10 +24,10 @@ const TemplatesTable = (props) => {
     return (
         <Fragment>
             <CardColumns>
-                {templates.map((template, index) => <TemplateCard key={index} template={template}/>)}
+                {variables.map((variable, index) => <VariableRow key={index} variable={variable}/>)}
             </CardColumns>
         </Fragment>
     )
 }
 
-export default TemplatesTable;
+export default VariablesTable;
