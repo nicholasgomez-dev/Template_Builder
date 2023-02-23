@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { MongoClient, ObjectID, ObjectId } = require("mongodb");
 const flatten = require('flat');
-const MongoUri = `mongodb+srv://${process.env.mongo_db_atlas_uname}:${process.env.mongo_db_atlas_pword}@${process.env.mongo_connection_url}/admin?retryWrites=true&w=majority`;
+let MongoUri = `mongodb+srv://${process.env.mongo_db_atlas_uname}:${process.env.mongo_db_atlas_pword}@${process.env.mongo_connection_url}/admin?retryWrites=true&w=majority`;
 
 // CRUD here
 module.exports.insertDocument = (db, coll, data) => {
@@ -53,7 +53,8 @@ module.exports.upsertDocument = (db, coll, data = {}, query = {}) => {
  * @param {String} collection - Collection name
  * @param {Object} projectFields - MongoDB project options object. Ex-{ _id: 1, name: 1, title: 0}
  */
-module.exports.readAllDocuments = (db, collection, projectFields = {}, filter = {}) => {
+module.exports.readAllDocuments = (db, collection, projectFields = {}, filter = {}, AltURI) => {
+    if (AltURI) MongoUri = AltURI
     const client = new MongoClient(MongoUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,

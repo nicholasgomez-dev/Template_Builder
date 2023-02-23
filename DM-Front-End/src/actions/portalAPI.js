@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const newAxios = axios.create({
-    // baseURL: `https://api.dealermasters.com`
+    baseURL: `http://localhost:8080`
 });
 
 export default newAxios;

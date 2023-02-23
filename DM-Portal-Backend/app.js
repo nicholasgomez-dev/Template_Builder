@@ -29,6 +29,7 @@ app.use('/api/sites', require('./routes/siteData')); //site router
 app.use('/api/inventory', require('./routes/inventoryData'));//inventory data router
 app.use('/api/images/upload', require('./routes/uploadImage')); //s3 image uploader
 app.use('/api/images/fetch', require('./routes/fetchImages'));
+app.use('/api/templatebuilder', require('./routes/templateBuilder')); //template builder router
 
 // Server start
 app.listen(process.env.PORT, () => console.log('Started on Port: ' + process.env.PORT))

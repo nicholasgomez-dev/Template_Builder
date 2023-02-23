@@ -74,6 +74,11 @@ import Admin from '../../pages/sites/admin/admin.js';
 import SiteLanding from '../../pages/sitelanding/siteLanding'
 import InventoryRulesWrap from '../../pages/sites/rules/inventoryRulesWrap';
 import RuleEdit from '../../pages/sites/rules/ruleEdit';
+import ListTemplates from '../../pages/templates/List/ListTemplates';
+import CreateTemplate from '../../pages/templates/Create/CreateTemplate';
+import BuildTemplate from '../../pages/templates/Build/BuildTemplate';
+import ListDealers from '../../pages/dealers/List/ListDealers';
+import ListVariables from '../../pages/variables/List/ListVariables';
 
 class Layout extends React.Component {
   static propTypes = {
@@ -149,7 +154,7 @@ class Layout extends React.Component {
                 >
                   <Switch>
                 
-                    <Route path="/app/main" exact render={() => <Redirect to="/app/main/sites" />} />
+                    <Route path="/app/main" exact render={() => <Redirect to="/app/main/templates" />} />
                    
                     <Route path="/app/main/sites/:site_id/rules" exact component={InventoryRulesWrap}/>
                     
@@ -168,6 +173,11 @@ class Layout extends React.Component {
                     <Route path="/app/main/sites/:site_id/navigation" exact component={SiteNav} />
                     <Route path="/app/main/sites/:site_id/analytics" exact component={Analytics} />
                     <Route path="/app/main/sites/:site_id/landing" exact component={SiteLanding} />
+                    <Route path="/app/main/templates" exact component={ListTemplates} />
+                    <Route path="/app/main/templates/create" exact component={CreateTemplate} />
+                    <Route path="/app/main/templates/build" exact component={BuildTemplate} />
+                    <Route path="/app/main/dealers" exact component={ListDealers} />
+                    <Route path="/app/main/variables" exact component={ListVariables} />
                     <Route path="/app/edit_profile" exact component={UserFormPage} />
                     <Route path="/app/password" exact component={ChangePasswordFormPage} />
                     <Route path="/admin" exact render={() => <Redirect to="/admin/users" />} />

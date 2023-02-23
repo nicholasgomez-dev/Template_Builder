@@ -104,13 +104,13 @@ class Sidebar extends React.Component {
                             exact={true}
                             childrenLinks={[
                                 {
-                                    header: 'Create Templates', link: '/app/main/sites', exact: true
+                                    header: 'Create Templates', link: '/app/main/templates/create', exact: true
                                 },
                                 {
-                                    header: 'Build Template', link: '/app/main/sites/create',
+                                    header: 'Build Template', link: '/app/main/templates/build',
                                 },
                                 {
-                                    header: 'View Templates', link: '/app/main/sites/create',
+                                    header: 'View Templates', link: '/app/main/templates',
                                 }
                             ]}
                         />
@@ -129,7 +129,7 @@ class Sidebar extends React.Component {
                                     header: 'Create Dealers', link: '/app/main/sites', exact: true
                                 },
                                 {
-                                    header: 'View Dealers', link: '/app/main/sites/create',
+                                    header: 'View Dealers', link: '/app/main/dealers',
                                 }
                             ]}
                         />
@@ -148,7 +148,7 @@ class Sidebar extends React.Component {
                                     header: 'Create Variables', link: '/app/main/sites', exact: true
                                 },
                                 {
-                                    header: 'View Variables', link: '/app/main/sites/create',
+                                    header: 'View Variables', link: '/app/main/variables',
                                 }
                             ]}
                         />
