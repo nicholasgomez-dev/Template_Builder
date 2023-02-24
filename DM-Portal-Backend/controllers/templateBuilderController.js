@@ -45,5 +45,16 @@ module.exports = {
             console.log(err)
             res.json(err)
         })
+    },
+    // History Controllers
+    getAllSettings: (req, res) => {
+        readAllDocuments('Template_Builder', 'Settings', {}, {}, process.env.TB_MONGO_URI)
+        .then(result => {
+            res.json(result[0])
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
     }
 }
