@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { getAllTemplates, getAllDealers, getAllVariables, getAllHistory, getAllSettings } = require('../controllers/templateBuilderController');
+const { getAllTemplates, getAllDealers, getAllVariables, getAllHistory, getAllSettings, getOneTemplate } = require('../controllers/templateBuilderController');
 
 // Template Routes
 router.get('/templates', getAllTemplates)
+router.get('/templates/search', getOneTemplate)
 
 // Dealer Routes
 router.get('/dealers', getAllDealers)

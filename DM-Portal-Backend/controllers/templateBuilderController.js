@@ -13,6 +13,18 @@ module.exports = {
                 res.json(err)
             })
     },
+    getOneTemplate: (req, res) => {
+        console.log(req.query.name)
+        readAllDocuments('Template_Builder', 'Templates', {}, {name: req.query.name}, process.env.TB_MONGO_URI)
+            .then(result => {
+                console.log(result)
+                res.json(result)
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
+    },
     // Dealer Controllers
     getAllDealers: (req, res) => {
         readAllDocuments('Template_Builder', 'Dealers', {}, {}, process.env.TB_MONGO_URI)
