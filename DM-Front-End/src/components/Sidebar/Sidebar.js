@@ -126,7 +126,7 @@ class Sidebar extends React.Component {
                             exact={true}
                             childrenLinks={[
                                 {
-                                    header: 'Create Dealers', link: '/app/main/sites', exact: true
+                                    header: 'Create Dealers', link: '/app/main/dealers/create', exact: true
                                 },
                                 {
                                     header: 'View Dealers', link: '/app/main/dealers',

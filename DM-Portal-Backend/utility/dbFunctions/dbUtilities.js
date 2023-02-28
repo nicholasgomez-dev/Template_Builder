@@ -4,7 +4,8 @@ const flatten = require('flat');
 let MongoUri = `mongodb+srv://${process.env.mongo_db_atlas_uname}:${process.env.mongo_db_atlas_pword}@${process.env.mongo_connection_url}/admin?retryWrites=true&w=majority`;
 
 // CRUD here
-module.exports.insertDocument = (db, coll, data) => {
+module.exports.insertDocument = (db, coll, data, altURI) => {
+    if (altURI) MongoUri = altURI
     const client = new MongoClient(MongoUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -55,6 +56,7 @@ module.exports.upsertDocument = (db, coll, data = {}, query = {}) => {
  */
 module.exports.readAllDocuments = (db, collection, projectFields = {}, filter = {}, AltURI) => {
     if (AltURI) MongoUri = AltURI
+    if (filter._id) filter._id = ObjectID(filter._id)
     const client = new MongoClient(MongoUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -105,7 +107,8 @@ module.exports.getDocumentByID = (db, collection, objID, projectFields = {}, sor
  * @param {String} fieldForUpdate - MongoDB update key, i.e "page.date"
  * @param {String} value - value for insert
  */
-module.exports.updateDocumentField = (db, collection, objID, fieldForUpdate, value="") => {
+module.exports.updateDocumentField = (db, collection, objID, fieldForUpdate, value="", newDocument, altURI) => {
+    if (altURI) MongoUri = altURI
     const client = new MongoClient(MongoUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -114,15 +117,27 @@ module.exports.updateDocumentField = (db, collection, objID, fieldForUpdate, val
         client.connect((error, client) => {
             if (error) reject(error);
             const _db = client.db(db);
-            _db.collection(collection).findOneAndUpdate({_id: ObjectID(objID)}, {
-                $set: {
-                    [fieldForUpdate]: value
-                }
-            })
-            .then(data => { resolve(data) })
-            .catch(err => { console.log(err); reject(err) })
-            .finally(() => client.close())
-
+            if (newDocument) {
+                _db.collection(collection).findOneAndUpdate({_id: ObjectID(objID)}, {
+                    $set: {
+                        name: newDocument.name,
+                        oem: newDocument.oem,
+                        platform: newDocument.platform
+                    }
+                })
+                .then(data => { resolve(data) })
+                .catch(err => { console.log(err); reject(err) })
+                .finally(() => client.close())
+            } else {
+                _db.collection(collection).findOneAndUpdate({_id: ObjectID(objID)}, {
+                    $set: {
+                        [fieldForUpdate]: value
+                    }
+                })
+                .then(data => { resolve(data) })
+                .catch(err => { console.log(err); reject(err) })
+                .finally(() => client.close())
+            }
         })
     })
 }

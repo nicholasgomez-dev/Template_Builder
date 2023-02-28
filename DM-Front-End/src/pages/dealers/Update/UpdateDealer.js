@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from 'react';
+import _ from "lodash";
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Loader from '../../../components/Loader/Loader';
 
-const CreateDealer = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [message, setMessage] = useState(null);
-    const [success, setSuccess] = useState(null);
-    const [settings, setSettings] = useState([]);
+const UpdateDealer = (props) => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [dealer, setDealer] = useState({});
     const [formData, setFormData] = useState({});
+    const [settings, setSettings] = useState({});
+    const [message, setMessage] = useState('');
+    const [success, setSuccess] = useState(false);
     const [oemDropdownOpen, setOemDropdownOpen] = useState(false);
     const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
 
-    // Get OEM and Platform lists on load
     useEffect(() => {
-        setLoading(true);
-        API.get('/api/templatebuilder/settings/')
+        setSuccess(false);
+        Promise.all([API.get('/api/templatebuilder/settings/'), API.get(`/api/templatebuilder/dealers/search?_id=${props.match.params.id}`)])
             .then(res => {
-                setSettings(res.data);
+                setSettings(res[0].data);
+                setFormData(res[1].data[0]);
+                setDealer(res[1].data[0]);
                 setLoading(false);
             })
             .catch(err => {
@@ -26,7 +29,7 @@ const CreateDealer = () => {
                 setError(true);
                 setLoading(false);
             })
-    }, []);
+    }, [loading]);
 
     // Input handlers
     function handleNameInput(value) {
@@ -46,14 +49,6 @@ const CreateDealer = () => {
     }
 
     // Validation handler
-    function allDataExists() {
-        return new Promise((resolve, reject) => {
-            if (formData.oem && formData.platform && formData.name) {
-                resolve(true);
-            }
-            reject('Please fill out all fields.');
-        })
-    }
     function uniqueDealerName() {
         return new Promise((resolve, reject) => {
             API.get(`/api/templatebuilder/dealers/search?name=${formData.name}`)
@@ -70,10 +65,13 @@ const CreateDealer = () => {
         })
     }
     function sendFormData() {
-        API.post('/api/templatebuilder/dealers/save', formData)
+        API.post(`/api/templatebuilder/dealers/update?_id=${dealer._id}`, formData)
             .then(res => {
                 if (res.status === 200) {
-                    return setSuccess('Dealer successfully created.');
+                    setSuccess('Dealer successfully updated.');
+                    return setTimeout(() => {
+                        setLoading(true);
+                    }, 3000);
                 }
                 console.log(res);
                 setMessage('Something went wrong. Please try again later.');
@@ -87,37 +85,41 @@ const CreateDealer = () => {
     // Submission handler
     async function handleSubmission(e) {
         e.preventDefault();
-        Promise.all([allDataExists(), uniqueDealerName()])
-            .then(() => {
-                sendFormData();
-            })
-            .catch(err => {
-                console.log(err);
-                setMessage(err);
-            })
-            
-        console.log(formData);
+        setMessage('');
+        //Check if any changes were made
+        if (_.isEqual(formData, dealer)) {
+            return setMessage('No changes were made.');
+        }
+        // Check if name was changed
+        if (formData.name !== dealer.name) {
+            try {
+                await uniqueDealerName();
+            } catch (err) {
+                return setMessage(err);
+            }
+        }
+        sendFormData();
     }
-    
+
 
     return (
         <div>
-            <h1>Create Dealer</h1>
+            <h1>Update Dealer</h1>
             {
-                loading ? 
-                    <Loader /> 
+                loading ?
+                    <Loader />
                 : error ?
-                    <p>Something went wrong please try again later...</p>
+                    <p>There was an error loading the dealer.</p>
                 : <div className="page-form">
                     <Form onSubmit={(e) => handleSubmission(e)}>
                         <FormGroup>
                             <Label for="dealerName">Dealer Name</Label>
-                            <Input type="text" name="dealerName" id="dealerName" placeholder="Dealer Name" onChange={(e) => handleNameInput(e.target.value)} required />
+                            <Input type="text" name="dealerName" id="dealerName" placeholder="Dealer Name" onChange={(e) => handleNameInput(e.target.value)} value={formData.name} required />
                         </FormGroup>
                         <FormGroup>
                             <Label for="oem">OEM<span style={{color:'red'}}>*</span></Label>
                             <Dropdown name="oem" required isOpen={oemDropdownOpen} toggle={toggleOemDropdown} >
-                                <DropdownToggle caret>{formData.oem ? formData.oem : 'Select Option'}</DropdownToggle>
+                                <DropdownToggle caret>{formData.oem}</DropdownToggle>
                                 <DropdownMenu>
                                     {settings.oem ? settings.oem.map((oem, index) => <DropdownItem key={index} onClick={(e) => handleOEMInput(e)}>{oem}</DropdownItem>) : ''}
                                 </DropdownMenu>
@@ -126,7 +128,7 @@ const CreateDealer = () => {
                         <FormGroup>
                             <Label for="platform">Platform<span style={{color:'red'}}>*</span></Label>
                             <Dropdown name="platform" required isOpen={platformDropdownOpen} toggle={togglePlatformDropdown} >
-                                <DropdownToggle caret>{formData.platform ? formData.platform : 'Select Option'}</DropdownToggle>
+                                <DropdownToggle caret>{formData.platform}</DropdownToggle>
                                 <DropdownMenu>
                                     {settings.platform ? settings.platform.map((platform, index) => <DropdownItem key={index} onClick={(e) => handlePlatformInput(e)}>{platform}</DropdownItem>) : ''}
                                 </DropdownMenu>
@@ -142,4 +144,4 @@ const CreateDealer = () => {
     )
 };
 
-export default CreateDealer;
+export default UpdateDealer;

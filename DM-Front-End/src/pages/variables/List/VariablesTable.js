@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { Link } from 'react-router-dom';
 import { Row, Col, Badge, Card, CardBody, CardTitle, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
 
 const VariablesTable = (props) => {
@@ -14,8 +15,9 @@ const VariablesTable = (props) => {
                 </CardTitle>
                 <CardBody>
                     <CardText>
-                        <p>{variable.description}</p>
+                        {variable.description}
                     </CardText>
+                    <Link to={`/app/main/variables/${variable._id}/update`}>Update</Link>
                 </CardBody>
             </Card>
         )

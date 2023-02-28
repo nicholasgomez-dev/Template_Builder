@@ -1,4 +1,4 @@
-const { readAllDocuments } = require('../utility/dbFunctions/dbUtilities');
+const { readAllDocuments, insertDocument, updateDocumentField } = require('../utility/dbFunctions/dbUtilities');
 require('dotenv').config();
 
 module.exports = {
@@ -14,10 +14,19 @@ module.exports = {
             })
     },
     getOneTemplate: (req, res) => {
-        console.log(req.query.name)
-        readAllDocuments('Template_Builder', 'Templates', {}, {name: req.query.name}, process.env.TB_MONGO_URI)
+        readAllDocuments('Template_Builder', 'Templates', {}, { name: req.query.name }, process.env.TB_MONGO_URI)
             .then(result => {
                 console.log(result)
+                res.json(result)
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
+    },
+    saveTemplate: (req, res) => {
+        insertDocument('Template_Builder', 'Templates', req.body, process.env.TB_MONGO_URI)
+            .then(result => {
                 res.json(result)
             })
             .catch(err => {
@@ -35,6 +44,38 @@ module.exports = {
             console.log(err)
             res.json(err)
         })
+    },
+    getOneDealer: (req, res) => {
+        readAllDocuments('Template_Builder', 'Dealers', {}, req.query, process.env.TB_MONGO_URI)
+            .then(result => {
+                console.log(result)
+                res.json(result)
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
+    },
+    updateDealer: (req, res) => {
+        updateDocumentField('Template_Builder', 'Dealers', req.query._id, {}, '', req.body, process.env.TB_MONGO_URI)
+            .then(result => {
+                console.log(result)
+                res.json(result)
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
+    },
+    saveDealer: (req, res) => {
+        insertDocument('Template_Builder', 'Dealers', req.body, process.env.TB_MONGO_URI)
+            .then(result => {
+                res.json(result)
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
     },
     // Variable Controllers
     getAllVariables: (req, res) => {

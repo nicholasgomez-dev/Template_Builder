@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { Link } from 'react-router-dom';
 import { Row, Col, Badge, Card, CardBody, CardTitle, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
 
 const DealersTable = (props) => {
@@ -14,8 +15,9 @@ const DealersTable = (props) => {
                 </CardTitle>
                 <CardBody>
                     <CardText>
-                        <p>{dealer.description}</p>
+                        {dealer.description}
                     </CardText>
+                    <Link to={`/app/main/dealers/${dealer._id}/update`}>Update</Link>
                 </CardBody>
             </Card>
         )

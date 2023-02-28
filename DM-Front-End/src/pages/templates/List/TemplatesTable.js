@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { Link } from 'react-router-dom';
 import { Row, Col, Badge, Card, CardBody, CardTitle, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
 
 const TemplatesTable = (props) => {
@@ -14,8 +15,9 @@ const TemplatesTable = (props) => {
                 </CardTitle>
                 <CardBody>
                     <CardText>
-                        <p>{template.description}</p>
+                        {template.description}
                     </CardText>
+                    <Link to={`/app/main/templates/${template._id}/update`}>Update</Link>
                 </CardBody>
             </Card>
         )

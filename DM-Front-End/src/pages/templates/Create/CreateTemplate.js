@@ -11,6 +11,7 @@ const CreateTemplate = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [message, setMessage] = useState(null);
+    const [success, setSuccess] = useState(null);
     const [settings, setSettings] = useState([]);
     const [formData, setFormData] = useState({});
     const [oemDropdownOpen, setOemDropdownOpen] = useState(false);
@@ -104,8 +105,19 @@ const CreateTemplate = () => {
                 })
         })
     }
-    function sendFormData(data) {
-        console.log('Sending data...')
+    function sendFormData() {
+        API.post('/api/templatebuilder/templates/save', formData)
+            .then(res => {
+                if (res.status === 200) {
+                    return setSuccess('Template successfully created.');
+                }
+                console.log(res);
+                setMessage('Something went wrong. Please try again later.');
+            })
+            .catch(err => {
+                console.log(err);
+                setMessage('Something went wrong. Please try again later.');
+            })
     }
 
     // Form submission handler
@@ -113,9 +125,8 @@ const CreateTemplate = () => {
         e.preventDefault()
         setMessage(null);
         Promise.all([allDataExists(), uniqueTemplateName(), validateVariables()])
-            .then(results => {
-                console.log(results)
-                console.log('All passed')
+            .then(() => {
+                sendFormData()
             })
             .catch(err => {
                 console.log(err)
@@ -164,12 +175,13 @@ const CreateTemplate = () => {
                                 </Dropdown>
                             </FormGroup>
                             <FormGroup>
-                                <Label for="html">Upload Template HTML<span style={{color:'red'}}>*</span></Label>
+                                <Label for="html">Upload Minified HTML<span style={{color:'red'}}>*</span></Label>
                                 <CodeMirror name="html" required value={formData.html ? formData.html : ''} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} onBeforeChange={(editor, data, value) => handleCodeMirrorInput(value)} />
                             </FormGroup>
                             <input type="submit" value="Submit" />
                         </Form>
                         {message ? <p style={{color:'red'}}>{message}</p> : ''}
+                        {success ? <p style={{color:'green'}}>{success}</p> : ''}
                     </div>
             }
         </div>
