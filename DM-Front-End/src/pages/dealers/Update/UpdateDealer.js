@@ -65,6 +65,7 @@ const UpdateDealer = (props) => {
         })
     }
     function sendFormData() {
+        delete formData._id;
         API.post(`/api/templatebuilder/dealers/update?_id=${dealer._id}`, formData)
             .then(res => {
                 if (res.status === 200) {
@@ -79,7 +80,7 @@ const UpdateDealer = (props) => {
             .catch(err => {
                 console.log(err);
                 setMessage('Something went wrong. Please try again later.');
-            })
+            });
     }
 
     // Submission handler

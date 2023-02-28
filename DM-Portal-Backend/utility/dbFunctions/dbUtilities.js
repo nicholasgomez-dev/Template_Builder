@@ -119,11 +119,7 @@ module.exports.updateDocumentField = (db, collection, objID, fieldForUpdate, val
             const _db = client.db(db);
             if (newDocument) {
                 _db.collection(collection).findOneAndUpdate({_id: ObjectID(objID)}, {
-                    $set: {
-                        name: newDocument.name,
-                        oem: newDocument.oem,
-                        platform: newDocument.platform
-                    }
+                    $set: newDocument
                 })
                 .then(data => { resolve(data) })
                 .catch(err => { console.log(err); reject(err) })
