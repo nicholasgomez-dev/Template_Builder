@@ -145,7 +145,7 @@ class Sidebar extends React.Component {
                             exact={true}
                             childrenLinks={[
                                 {
-                                    header: 'Create Variables', link: '/app/main/sites', exact: true
+                                    header: 'Create Variables', link: '/app/main/variables/create', exact: true
                                 },
                                 {
                                     header: 'View Variables', link: '/app/main/variables',

@@ -14,7 +14,7 @@ module.exports = {
             })
     },
     getOneTemplate: (req, res) => {
-        readAllDocuments('Template_Builder', 'Templates', {}, { name: req.query.name }, process.env.TB_MONGO_URI)
+        readAllDocuments('Template_Builder', 'Templates', {}, req.query, process.env.TB_MONGO_URI)
             .then(result => {
                 console.log(result)
                 res.json(result)
@@ -33,6 +33,17 @@ module.exports = {
                 console.log(err)
                 res.json(err)
             })
+    },
+    updateTemplate: (req, res) => {
+        updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', req.body, process.env.TB_MONGO_URI)
+        .then(result => {
+            console.log(result)
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
     },
     // Dealer Controllers
     getAllDealers: (req, res) => {
@@ -87,6 +98,38 @@ module.exports = {
                 console.log(err)
                 res.json(err)
             })
+    },
+    getOneVariable: (req, res) => {
+        readAllDocuments('Template_Builder', 'Variables', {}, req.query, process.env.TB_MONGO_URI)
+        .then(result => {
+            console.log(result)
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
+    },
+    saveVariable: (req, res) => {
+        insertDocument('Template_Builder', 'Variables', req.body, process.env.TB_MONGO_URI)
+        .then(result => {
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
+    },
+    updateVariable: (req, res) => {
+        updateDocumentField('Template_Builder', 'Variables', req.query._id, {}, '', req.body, process.env.TB_MONGO_URI)
+        .then(result => {
+            console.log(result)
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
     },
     // History Controllers
     getAllHistory: (req, res) => {

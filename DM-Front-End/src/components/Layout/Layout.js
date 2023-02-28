@@ -78,12 +78,15 @@ import RuleEdit from '../../pages/sites/rules/ruleEdit';
 import ListTemplates from '../../pages/templates/List/ListTemplates';
 import CreateTemplate from '../../pages/templates/Create/CreateTemplate';
 import BuildTemplate from '../../pages/templates/Build/BuildTemplate';
+import UpdateTemplate from '../../pages/templates/Update/UpdateTemplate';
 // Dealers
 import ListDealers from '../../pages/dealers/List/ListDealers';
 import CreateDealer from '../../pages/dealers/Create/CreateDealer';
 import UpdateDealer from '../../pages/dealers/Update/UpdateDealer';
 // Variables
 import ListVariables from '../../pages/variables/List/ListVariables';
+import CreateVariable from '../../pages/variables/Create/CreateVariable';
+import UpdateVariable from '../../pages/variables/Update/UpdateVariable';
 
 class Layout extends React.Component {
   static propTypes = {
@@ -178,16 +181,23 @@ class Layout extends React.Component {
                     <Route path="/app/main/sites/:site_id/navigation" exact component={SiteNav} />
                     <Route path="/app/main/sites/:site_id/analytics" exact component={Analytics} />
                     <Route path="/app/main/sites/:site_id/landing" exact component={SiteLanding} />
+
                     {/*Templates*/}
                     <Route path="/app/main/templates" exact component={ListTemplates} />
                     <Route path="/app/main/templates/create" exact component={CreateTemplate} />
                     <Route path="/app/main/templates/build" exact component={BuildTemplate} />
+                    <Route path="/app/main/templates/:id/update" exact component={UpdateTemplate} />
+
                     {/*Dealers*/}
                     <Route path="/app/main/dealers" exact component={ListDealers} />
                     <Route path="/app/main/dealers/create" exact component={CreateDealer} />
                     <Route path="/app/main/dealers/:id/update" exact component={UpdateDealer} />
+
                     {/*Variables*/}
                     <Route path="/app/main/variables" exact component={ListVariables} />
+                    <Route path="/app/main/variables/create" exact component={CreateVariable} />
+                    <Route path="/app/main/variables/:id/update" exact component={UpdateVariable} />
+
                     <Route path="/app/edit_profile" exact component={UserFormPage} />
                     <Route path="/app/password" exact component={ChangePasswordFormPage} />
                     <Route path="/admin" exact render={() => <Redirect to="/admin/users" />} />
