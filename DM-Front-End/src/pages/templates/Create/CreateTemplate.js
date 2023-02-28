@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Redirect } from 'react-router-dom';
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Loader from '../../../components/Loader/Loader';
@@ -16,6 +17,8 @@ const CreateTemplate = () => {
     const [formData, setFormData] = useState({});
     const [oemDropdownOpen, setOemDropdownOpen] = useState(false);
     const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
+    const [redirect, setRedirect] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     // Get OEM and Platform lists on load
     useEffect(() => {
@@ -109,13 +112,19 @@ const CreateTemplate = () => {
         API.post('/api/templatebuilder/templates/save', formData)
             .then(res => {
                 if (res.status === 200) {
-                    return setSuccess('Template successfully created.');
+                    setSubmitted(false);
+                    setSuccess('Template successfully created.');
+                    return setTimeout(() => {
+                        setRedirect(true);
+                    }, 2000);
                 }
                 console.log(res);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
             .catch(err => {
                 console.log(err);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
     }
@@ -124,12 +133,14 @@ const CreateTemplate = () => {
     async function handleSubmission(e) {
         e.preventDefault()
         setMessage(null);
+        setSubmitted(true);
         Promise.all([allDataExists(), uniqueTemplateName(), validateVariables()])
             .then(() => {
                 sendFormData()
             })
             .catch(err => {
                 console.log(err)
+                setSubmitted(false);
                 setMessage(err);
             })
     };
@@ -178,10 +189,17 @@ const CreateTemplate = () => {
                                 <Label for="html">Upload Minified HTML<span style={{color:'red'}}>*</span></Label>
                                 <CodeMirror name="html" required value={formData.html ? formData.html : ''} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} onBeforeChange={(editor, data, value) => handleCodeMirrorInput(value)} />
                             </FormGroup>
-                            <input type="submit" value="Submit" />
-                        </Form>
-                        {message ? <p style={{color:'red'}}>{message}</p> : ''}
-                        {success ? <p style={{color:'green'}}>{success}</p> : ''}
+                            {
+                            submitted ? 
+                                <Loader /> 
+                            : success ?
+                                <p style={{color:'green'}}>{success}</p>
+                            : 
+                                <input type="submit" value="Submit" />
+                        }
+                    </Form>
+                    {message ? <p style={{color:'red'}}>{message}</p> : ''}
+                    {redirect ? <Redirect to="/app/main/templates" /> : ''}
                     </div>
             }
         </div>

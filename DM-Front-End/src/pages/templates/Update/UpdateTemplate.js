@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import _ from "lodash";
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
@@ -18,6 +19,8 @@ const UpdateTemplate = (props) => {
     const [success, setSuccess] = useState(false);
     const [oemDropdownOpen, setOemDropdownOpen] = useState(false);
     const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
         setSuccess(false);
@@ -115,24 +118,29 @@ const UpdateTemplate = (props) => {
         API.post(`/api/templatebuilder/templates/update?_id=${template._id}`, formData)
             .then(res => {
                 if (res.status === 200) {
+                    setSubmitted(false);
                     setSuccess('Template successfully updated.');
                     return setTimeout(() => {
-                        setLoading(true);
+                        setRedirect(true);
                     }, 3000);
                 }
                 console.log(res);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
             .catch(err => {
                 console.log(err);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             });
     } 
     async function handleSubmission(e) {
         e.preventDefault();
-        setMessage('');
+        setMessage(null);
+        setSubmitted(true);
         //Check if any changes were made
         if (_.isEqual(formData, template)) {
+            setSubmitted(false);
             return setMessage('No changes were made.');
         }
         // Check if name was changed
@@ -140,6 +148,7 @@ const UpdateTemplate = (props) => {
             try {
                 await uniqueTemplateName();
             } catch (err) {
+                setSubmitted(false);
                 return setMessage(err);
             }
         }
@@ -148,6 +157,7 @@ const UpdateTemplate = (props) => {
             try {
                 await validateVariables();
             } catch (err) {
+                setSubmitted(false);
                 return setMessage(err);
             }
         }
@@ -155,6 +165,7 @@ const UpdateTemplate = (props) => {
         try {
             await allDataExists();
         } catch (err) {
+            setSubmitted(false);
             return setMessage(err);
         }
         // Submit changes
@@ -203,10 +214,17 @@ const UpdateTemplate = (props) => {
                             <Label for="html">Upload Minified HTML<span style={{color:'red'}}>*</span></Label>
                             <CodeMirror name="html" required value={formData.html} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} onBeforeChange={(editor, data, value) => handleCodeMirrorInput(value)} />
                         </FormGroup>
-                        <input type="submit" value="Submit" />
+                        {
+                            submitted ? 
+                                <Loader /> 
+                            : success ?
+                                <p style={{color:'green'}}>{success}</p>
+                            : 
+                                <input type="submit" value="Submit" />
+                        }
                     </Form>
                     {message ? <p style={{color:'red'}}>{message}</p> : ''}
-                    {success ? <p style={{color:'green'}}>{success}</p> : ''}
+                    {redirect ? <Redirect to="/app/main/templates" /> : ''}
                   </div>
             }
         </div>
