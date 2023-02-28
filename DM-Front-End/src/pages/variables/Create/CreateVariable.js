@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input } from 'reactstrap';
+import Loader from '../../../components/Loader/Loader';
 
 const CreateVariables = () => {
     const [message, setMessage] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({});
     const [redirect, setRedirect] = useState(false);
 
@@ -63,16 +65,19 @@ const CreateVariables = () => {
         API.post('/api/templatebuilder/variables/save', formData)
             .then(res => {
                 if (res.status === 200) {
+                    setSubmitted(false);
                     setSuccess('Variable successfully created.');
                     return setTimeout(() => {
                         setRedirect(true);
                     }, 3000);
                 }
                 console.log(res);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
             .catch(err => {
                 console.log(err);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
     }
@@ -80,12 +85,14 @@ const CreateVariables = () => {
     // Submission handler
     async function handleSubmission(e) {
         e.preventDefault();
+        setSubmitted(true);
         Promise.all([allDataExists(), uniqueVariableName(), uniqueVariableValue()])
             .then(() => {
                 sendFormData();
             })
             .catch(err => {
                 console.log(err);
+                setSubmitted(false);
                 setMessage(err);
             })
 
@@ -109,11 +116,17 @@ const CreateVariables = () => {
                         <Label for="variableDescription">Variable Description</Label>
                         <Input type="text" name="variableDescription" id="variableDescription" placeholder="Variable Description" onChange={(e) => handleDescriptionInput(e.target.value)} required />
                     </FormGroup>
-                    <input type="submit" value="Submit" />
-                </Form>
-                {message ? <p style={{color:'red'}}>{message}</p> : ''}
-                {success ? <p style={{color:'green'}}>{success}</p> : ''}
-                {redirect ? <Redirect to="/app/main/variables" /> : ''}
+                    {
+                            submitted ? 
+                                <Loader /> 
+                            : success ?
+                                <p style={{color:'green'}}>{success}</p>
+                            : 
+                                <input type="submit" value="Submit" />
+                        }
+                    </Form>
+                    {message ? <p style={{color:'red'}}>{message}</p> : ''}
+                    {redirect ? <Redirect to="/app/main/variables" /> : ''}
             </div>
         </div>
     );

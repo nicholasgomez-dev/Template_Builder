@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Loader from '../../../components/Loader/Loader';
@@ -8,6 +9,8 @@ const CreateDealer = () => {
     const [error, setError] = useState(null);
     const [message, setMessage] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [submitted, setSubmitted] = useState(false);
+    const [redirect, setRedirect] = useState(false);
     const [settings, setSettings] = useState([]);
     const [formData, setFormData] = useState({});
     const [oemDropdownOpen, setOemDropdownOpen] = useState(false);
@@ -73,13 +76,19 @@ const CreateDealer = () => {
         API.post('/api/templatebuilder/dealers/save', formData)
             .then(res => {
                 if (res.status === 200) {
-                    return setSuccess('Dealer successfully created.');
+                    setSubmitted(false);
+                    setSuccess('Dealer successfully created.');
+                    return setTimeout(() => {
+                        setRedirect(true);
+                    }, 2000);
                 }
                 console.log(res);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
             .catch(err => {
                 console.log(err);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
     }
@@ -87,16 +96,17 @@ const CreateDealer = () => {
     // Submission handler
     async function handleSubmission(e) {
         e.preventDefault();
+        setMessage(null);
+        setSubmitted(true);
         Promise.all([allDataExists(), uniqueDealerName()])
             .then(() => {
                 sendFormData();
             })
             .catch(err => {
                 console.log(err);
+                setSubmitted(false);
                 setMessage(err);
             })
-            
-        console.log(formData);
     }
     
 
@@ -132,10 +142,17 @@ const CreateDealer = () => {
                                 </DropdownMenu>
                             </Dropdown>
                         </FormGroup>
-                        <input type="submit" value="Submit" />
+                        {
+                            submitted ? 
+                                <Loader /> 
+                            : success ?
+                                <p style={{color:'green'}}>{success}</p>
+                            : 
+                                <input type="submit" value="Submit" />
+                        }
                     </Form>
                     {message ? <p style={{color:'red'}}>{message}</p> : ''}
-                    {success ? <p style={{color:'green'}}>{success}</p> : ''}
+                    {redirect ? <Redirect to="/app/main/dealers" /> : ''}
                   </div>
             }
         </div>

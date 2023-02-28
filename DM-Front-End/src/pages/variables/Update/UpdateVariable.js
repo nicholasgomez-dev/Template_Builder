@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import _ from "lodash";
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
@@ -11,6 +12,8 @@ const UpdateVariable = (props) => {
     const [formData, setFormData] = useState({});
     const [message, setMessage] = useState('');
     const [success, setSuccess] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
         setSuccess(false);
@@ -76,24 +79,29 @@ const UpdateVariable = (props) => {
         API.post(`/api/templatebuilder/variables/update?_id=${variable._id}`, formData)
             .then(res => {
                 if (res.status === 200) {
+                    setSubmitted(false);
                     setSuccess('Variable successfully updated.');
                     return setTimeout(() => {
-                        setLoading(true);
+                        setRedirect(true);
                     }, 3000);
                 }
                 console.log(res);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
             .catch(err => {
                 console.log(err);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             });
     }
     async function handleSubmission(e) {
         e.preventDefault();
-        setMessage('');
+        setMessage(null);
+        setSubmitted(true);
         //Check if any changes were made
         if (_.isEqual(formData, variable)) {
+            setSubmitted(false);
             return setMessage('No changes were made.');
         }
         // Check if name was changed
@@ -101,6 +109,7 @@ const UpdateVariable = (props) => {
             try {
                 await uniqueVariableName();
             } catch (err) {
+                setSubmitted(false);
                 return setMessage(err);
             }
         }
@@ -109,6 +118,7 @@ const UpdateVariable = (props) => {
             try {
                 await uniqueVariableValue();
             } catch (err) {
+                setSubmitted(false);
                 return setMessage(err);
             }
         }
@@ -137,10 +147,17 @@ const UpdateVariable = (props) => {
                             <Label for="variableDescription">Variable Description</Label>
                             <Input type="text" name="variableDescription" id="variableDescription" placeholder="Variable Description" onChange={(e) => handleDescriptionInput(e.target.value)} required value={formData.description}/>
                         </FormGroup>
-                        <input type="submit" value="Submit" />
+                        {
+                            submitted ? 
+                                <Loader /> 
+                            : success ?
+                                <p style={{color:'green'}}>{success}</p>
+                            : 
+                                <input type="submit" value="Submit" />
+                        }
                     </Form>
                     {message ? <p style={{color:'red'}}>{message}</p> : ''}
-                    {success ? <p style={{color:'green'}}>{success}</p> : ''}
+                    {redirect ? <Redirect to="/app/main/variables" /> : ''}
                   </div>
             }
         </div>

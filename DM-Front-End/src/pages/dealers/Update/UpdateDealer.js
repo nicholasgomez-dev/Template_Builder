@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import _ from "lodash";
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
@@ -12,6 +13,8 @@ const UpdateDealer = (props) => {
     const [settings, setSettings] = useState({});
     const [message, setMessage] = useState('');
     const [success, setSuccess] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [redirect, setRedirect] = useState(false);
     const [oemDropdownOpen, setOemDropdownOpen] = useState(false);
     const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
 
@@ -69,16 +72,19 @@ const UpdateDealer = (props) => {
         API.post(`/api/templatebuilder/dealers/update?_id=${dealer._id}`, formData)
             .then(res => {
                 if (res.status === 200) {
+                    setSubmitted(false);
                     setSuccess('Dealer successfully updated.');
                     return setTimeout(() => {
-                        setLoading(true);
+                        setRedirect(true);
                     }, 3000);
                 }
                 console.log(res);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             })
             .catch(err => {
                 console.log(err);
+                setSubmitted(false);
                 setMessage('Something went wrong. Please try again later.');
             });
     }
@@ -86,9 +92,11 @@ const UpdateDealer = (props) => {
     // Submission handler
     async function handleSubmission(e) {
         e.preventDefault();
-        setMessage('');
+        setMessage(null);
+        setSubmitted(true);
         //Check if any changes were made
         if (_.isEqual(formData, dealer)) {
+            setSubmitted(false);
             return setMessage('No changes were made.');
         }
         // Check if name was changed
@@ -96,6 +104,7 @@ const UpdateDealer = (props) => {
             try {
                 await uniqueDealerName();
             } catch (err) {
+                setSubmitted(false);
                 return setMessage(err);
             }
         }
@@ -135,10 +144,17 @@ const UpdateDealer = (props) => {
                                 </DropdownMenu>
                             </Dropdown>
                         </FormGroup>
-                        <input type="submit" value="Submit" />
+                        {
+                            submitted ? 
+                                <Loader /> 
+                            : success ?
+                                <p style={{color:'green'}}>{success}</p>
+                            : 
+                                <input type="submit" value="Submit" />
+                        }
                     </Form>
                     {message ? <p style={{color:'red'}}>{message}</p> : ''}
-                    {success ? <p style={{color:'green'}}>{success}</p> : ''}
+                    {redirect ? <Redirect to="/app/main/dealers" /> : ''}
                   </div>
             }
         </div>
