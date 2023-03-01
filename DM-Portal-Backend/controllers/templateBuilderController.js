@@ -25,7 +25,12 @@ module.exports = {
             })
     },
     saveTemplate: (req, res) => {
-        insertDocument('Template_Builder', 'Templates', req.body, process.env.TB_MONGO_URI)
+        let newTemplate = req.body;
+        newTemplate.created_by = res.locals.dm_user_information.nickname;
+        newTemplate.created_at = new Date();
+        newTemplate.updated_by = null
+        newTemplate.updated_at = null
+        insertDocument('Template_Builder', 'Templates', newTemplate, process.env.TB_MONGO_URI)
             .then(result => {
                 res.json(result)
             })
@@ -68,7 +73,10 @@ module.exports = {
             })
     },
     updateDealer: (req, res) => {
-        updateDocumentField('Template_Builder', 'Dealers', req.query._id, {}, '', req.body, process.env.TB_MONGO_URI)
+        let updatedDealer = req.body;
+        updatedDealer.updated_by = res.locals.dm_user_information.nickname;
+        updatedDealer.updated_at = new Date();
+        updateDocumentField('Template_Builder', 'Dealers', req.query._id, {}, '', updatedDealer, process.env.TB_MONGO_URI)
             .then(result => {
                 console.log(result)
                 res.json(result)
@@ -79,7 +87,12 @@ module.exports = {
             })
     },
     saveDealer: (req, res) => {
-        insertDocument('Template_Builder', 'Dealers', req.body, process.env.TB_MONGO_URI)
+        let newDealer = req.body;
+        newDealer.created_by = res.locals.dm_user_information.nickname;
+        newDealer.created_at = new Date();
+        newDealer.updated_by = null
+        newDealer.updated_at = null
+        insertDocument('Template_Builder', 'Dealers', newDealer, process.env.TB_MONGO_URI)
             .then(result => {
                 res.json(result)
             })
@@ -111,7 +124,12 @@ module.exports = {
         })
     },
     saveVariable: (req, res) => {
-        insertDocument('Template_Builder', 'Variables', req.body, process.env.TB_MONGO_URI)
+        let newVariable = req.body;
+        newVariable.created_by = res.locals.dm_user_information.nickname;
+        newVariable.created_at = new Date();
+        newVariable.updated_by = null
+        newVariable.updated_at = null
+        insertDocument('Template_Builder', 'Variables', newVariable, process.env.TB_MONGO_URI)
         .then(result => {
             res.json(result)
         })
@@ -121,7 +139,10 @@ module.exports = {
         })
     },
     updateVariable: (req, res) => {
-        updateDocumentField('Template_Builder', 'Variables', req.query._id, {}, '', req.body, process.env.TB_MONGO_URI)
+        let updatedVariable = req.body;
+        updatedVariable.updated_by = res.locals.dm_user_information.nickname;
+        updatedVariable.updated_at = new Date();
+        updateDocumentField('Template_Builder', 'Variables', req.query._id, {}, '', updatedVariable, process.env.TB_MONGO_URI)
         .then(result => {
             console.log(result)
             res.json(result)

@@ -1,29 +1,30 @@
 const express = require('express');
 const router = express.Router();
-const { getAllTemplates, getAllDealers, getAllVariables, getAllHistory, getAllSettings, getOneTemplate, saveTemplate, saveDealer, getOneDealer, updateDealer, updateTemplate, getOneVariable, saveVariable, updateVariable } = require('../controllers/templateBuilderController');
+const templateBuilder = require('../controllers/templateBuilderController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Template Routes
-router.get('/templates', getAllTemplates)
-router.get('/templates/search', getOneTemplate)
-router.post('/templates/save', saveTemplate)
-router.post('/templates/update', updateTemplate)
+router.get('/templates', authMiddleware.checkUserSiteAccess, templateBuilder.getAllTemplates)
+router.get('/templates/search', authMiddleware.checkUserSiteAccess, templateBuilder.getOneTemplate)
+router.post('/templates/save', authMiddleware.checkUserSiteAccess, templateBuilder.saveTemplate)
+router.post('/templates/update', authMiddleware.checkUserSiteAccess, templateBuilder.updateTemplate)
 
 // Dealer Routes
-router.get('/dealers', getAllDealers)
-router.get('/dealers/search', getOneDealer)
-router.post('/dealers/save', saveDealer)
-router.post('/dealers/update', updateDealer)
+router.get('/dealers', authMiddleware.checkUserSiteAccess, templateBuilder.getAllDealers)
+router.get('/dealers/search', authMiddleware.checkUserSiteAccess, templateBuilder.getOneDealer)
+router.post('/dealers/save', authMiddleware.checkUserSiteAccess, templateBuilder.saveDealer)
+router.post('/dealers/update', authMiddleware.checkUserSiteAccess, templateBuilder.updateDealer)
 
 // Variable Routes
-router.get('/variables', getAllVariables)
-router.get('/variables/search', getOneVariable)
-router.post('/variables/save', saveVariable)
-router.post('/variables/update', updateVariable)
+router.get('/variables', authMiddleware.checkUserSiteAccess, templateBuilder.getAllVariables)
+router.get('/variables/search', authMiddleware.checkUserSiteAccess, templateBuilder.getOneVariable)
+router.post('/variables/save', authMiddleware.checkUserSiteAccess, templateBuilder.saveVariable)
+router.post('/variables/update', authMiddleware.checkUserSiteAccess, templateBuilder.updateVariable)
 
 // History Routes
-router.get('/history', getAllHistory)
+router.get('/history', authMiddleware.checkUserSiteAccess, templateBuilder.getAllHistory)
 
 // Settings Routes
-router.get('/settings', getAllSettings)
+router.get('/settings', authMiddleware.checkUserSiteAccess, templateBuilder.getAllSettings)
 
 module.exports = router;
