@@ -30,6 +30,7 @@ module.exports = {
         newTemplate.created_at = new Date();
         newTemplate.updated_by = null
         newTemplate.updated_at = null
+
         insertDocument('Template_Builder', 'Templates', newTemplate, process.env.TB_MONGO_URI)
             .then(result => {
                 res.json(result)
@@ -40,15 +41,59 @@ module.exports = {
             })
     },
     updateTemplate: (req, res) => {
-        updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', req.body, process.env.TB_MONGO_URI)
-        .then(result => {
-            console.log(result)
-            res.json(result)
-        })
-        .catch(err => {
-            console.log(err)
-            res.json(err)
-        })
+        let updatedTemplate = req.body;
+        updatedTemplate.updated_by = res.locals.dm_user_information.nickname;
+        updatedTemplate.updated_at = new Date();
+        Promise.all([readAllDocuments('Template_Builder', 'Templates', {}, req.query, process.env.TB_MONGO_URI), readAllDocuments('Template_Builder', 'History', {}, { template_id: req.query._id }, process.env.TB_MONGO_URI)])
+            .then(result => {
+                let history = result[1][0];
+                let template = result[0][0];
+                // If no history found
+                if (!history) {
+                    history = {
+                        template_id: req.query._id,
+                        history: []
+                    }
+                    history.history.push(template)
+                    // Insert new history
+                    Promise.all([insertDocument('Template_Builder', 'History', history, process.env.TB_MONGO_URI), updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', updatedTemplate, process.env.TB_MONGO_URI)])
+                        .then(result => {
+                            res.json(result)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.json(err)
+                        })
+                } else {
+                    // If history found
+                    history.history.push(template)
+                    // Update history
+                    Promise.all([updateDocumentField('Template_Builder', 'History', history._id, {}, '', history, process.env.TB_MONGO_URI), updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', updatedTemplate, process.env.TB_MONGO_URI)])
+                        .then(result => {
+                            res.json(result)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.json(err)
+                        })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
+
+
+
+        // updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', req.body, process.env.TB_MONGO_URI)
+        // .then(result => {
+        //     console.log(result)
+        //     res.json(result)
+        // })
+        // .catch(err => {
+        //     console.log(err)
+        //     res.json(err)
+        // })
     },
     // Dealer Controllers
     getAllDealers: (req, res) => {
@@ -62,6 +107,7 @@ module.exports = {
         })
     },
     getOneDealer: (req, res) => {
+        console.log(req.query)
         readAllDocuments('Template_Builder', 'Dealers', {}, req.query, process.env.TB_MONGO_URI)
             .then(result => {
                 console.log(result)
@@ -152,18 +198,7 @@ module.exports = {
             res.json(err)
         })
     },
-    // History Controllers
-    getAllHistory: (req, res) => {
-        readAllDocuments('Template_Builder', 'History', {}, {}, process.env.TB_MONGO_URI)
-        .then(result => {
-            res.json(result)
-        })
-        .catch(err => {
-            console.log(err)
-            res.json(err)
-        })
-    },
-    // History Controllers
+    // Settings Controllers
     getAllSettings: (req, res) => {
         readAllDocuments('Template_Builder', 'Settings', {}, {}, process.env.TB_MONGO_URI)
         .then(result => {

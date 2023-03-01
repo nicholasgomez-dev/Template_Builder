@@ -21,9 +21,6 @@ router.get('/variables/search', authMiddleware.checkUserSiteAccess, templateBuil
 router.post('/variables/save', authMiddleware.checkUserSiteAccess, templateBuilder.saveVariable)
 router.post('/variables/update', authMiddleware.checkUserSiteAccess, templateBuilder.updateVariable)
 
-// History Routes
-router.get('/history', authMiddleware.checkUserSiteAccess, templateBuilder.getAllHistory)
-
 // Settings Routes
 router.get('/settings', authMiddleware.checkUserSiteAccess, templateBuilder.getAllSettings)
 
