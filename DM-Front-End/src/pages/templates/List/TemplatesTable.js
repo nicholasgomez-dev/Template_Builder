@@ -17,6 +17,12 @@ const TemplatesTable = (props) => {
                     <CardText>
                         {template.description}
                     </CardText>
+                    <CardText>
+                        {template.oem}
+                    </CardText>
+                    <CardText>
+                        {template.platform}
+                    </CardText>
                     <Link to={`/app/main/templates/${template._id}/update`}>Update</Link>
                 </CardBody>
             </Card>

@@ -17,6 +17,12 @@ const DealersTable = (props) => {
                     <CardText>
                         {dealer.description}
                     </CardText>
+                    <CardText>
+                        {dealer.oem}
+                    </CardText>
+                    <CardText>
+                        {dealer.platform}
+                    </CardText>
                     <Link to={`/app/main/dealers/${dealer._id}/update`}>Update</Link>
                 </CardBody>
             </Card>

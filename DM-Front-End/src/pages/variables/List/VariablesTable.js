@@ -17,6 +17,9 @@ const VariablesTable = (props) => {
                     <CardText>
                         {variable.description}
                     </CardText>
+                    <CardText>
+                        {variable.value}
+                    </CardText>
                     <Link to={`/app/main/variables/${variable._id}/update`}>Update</Link>
                 </CardBody>
             </Card>

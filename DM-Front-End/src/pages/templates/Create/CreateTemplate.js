@@ -85,7 +85,8 @@ const CreateTemplate = () => {
     function validateVariables() {
         return new Promise((resolve, reject) => {
             let html = formData.html;
-            let variables = html.match(/{{\w+}}/g);
+            let variables = html.match(/{{.*?}}/g);
+            console.log(variables)
             let uniqueVariables = [...new Set(variables)];
             // If no variables are found, return false
             if (uniqueVariables.length === 0) {
