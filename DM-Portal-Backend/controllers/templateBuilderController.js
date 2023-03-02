@@ -4,6 +4,7 @@ require('dotenv').config();
 module.exports = {
     // Template Controllers
     getAllTemplates: (req, res) => {
+        console.log(req.query)
         readAllDocuments('Template_Builder', 'Templates', {}, {}, process.env.TB_MONGO_URI)
             .then(result => {
                 res.json(result)
@@ -12,6 +13,22 @@ module.exports = {
                 console.log(err)
                 res.json(err)
             })
+    },
+    filterTemplates: (req, res) => {
+        Promise.all([
+            readAllDocuments('Template_Builder', 'Templates', {}, req.query, process.env.TB_MONGO_URI), 
+            readAllDocuments('Template_Builder', 'Templates', {}, {oem:"All OEMs", platform:"All Platforms"}, process.env.TB_MONGO_URI),
+            readAllDocuments('Template_Builder', 'Templates', {}, {oem:"All OEMs", platform:req.query.platform}, process.env.TB_MONGO_URI),
+            readAllDocuments('Template_Builder', 'Templates', {}, {oem:req.query.oem, platform:"All Platforms"}, process.env.TB_MONGO_URI)
+        ])
+        .then(result => {
+            let filteredTemplates = result[0].concat(result[1], result[2], result[3])
+            res.json(filteredTemplates)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
     },
     getOneTemplate: (req, res) => {
         readAllDocuments('Template_Builder', 'Templates', {}, req.query, process.env.TB_MONGO_URI)
@@ -82,18 +99,6 @@ module.exports = {
                 console.log(err)
                 res.json(err)
             })
-
-
-
-        // updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', req.body, process.env.TB_MONGO_URI)
-        // .then(result => {
-        //     console.log(result)
-        //     res.json(result)
-        // })
-        // .catch(err => {
-        //     console.log(err)
-        //     res.json(err)
-        // })
     },
     // Dealer Controllers
     getAllDealers: (req, res) => {
@@ -107,10 +112,8 @@ module.exports = {
         })
     },
     getOneDealer: (req, res) => {
-        console.log(req.query)
         readAllDocuments('Template_Builder', 'Dealers', {}, req.query, process.env.TB_MONGO_URI)
             .then(result => {
-                console.log(result)
                 res.json(result)
             })
             .catch(err => {
@@ -138,6 +141,7 @@ module.exports = {
         newDealer.created_at = new Date();
         newDealer.updated_by = null
         newDealer.updated_at = null
+        newDealer.variables = []
         insertDocument('Template_Builder', 'Dealers', newDealer, process.env.TB_MONGO_URI)
             .then(result => {
                 res.json(result)

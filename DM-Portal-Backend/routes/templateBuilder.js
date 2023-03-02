@@ -8,6 +8,7 @@ router.get('/templates', authMiddleware.checkUserSiteAccess, templateBuilder.get
 router.get('/templates/search', authMiddleware.checkUserSiteAccess, templateBuilder.getOneTemplate)
 router.post('/templates/save', authMiddleware.checkUserSiteAccess, templateBuilder.saveTemplate)
 router.post('/templates/update', authMiddleware.checkUserSiteAccess, templateBuilder.updateTemplate)
+router.get('/templates/filter', authMiddleware.checkUserSiteAccess, templateBuilder.filterTemplates)
 
 // Dealer Routes
 router.get('/dealers', authMiddleware.checkUserSiteAccess, templateBuilder.getAllDealers)
