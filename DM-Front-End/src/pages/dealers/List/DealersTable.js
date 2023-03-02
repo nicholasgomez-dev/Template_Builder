@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom';
 import { Row, Col, Badge, Card, CardBody, CardTitle, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
+import ListGroup from 'react-bootstrap/ListGroup';
+import style from './ListDealersCard.module.scss'
 
 const DealersTable = (props) => {
     const { dealers } = props
@@ -10,20 +12,17 @@ const DealersTable = (props) => {
 
         return (
             <Card>
-                <CardTitle>
+                <CardTitle className={style.header}>
                     <h4>{dealer.name}</h4>
                 </CardTitle>
                 <CardBody>
-                    <CardText>
-                        {dealer.description}
-                    </CardText>
-                    <CardText>
-                        {dealer.oem}
-                    </CardText>
-                    <CardText>
-                        {dealer.platform}
-                    </CardText>
-                    <Link to={`/app/main/dealers/${dealer._id}/update`}>Update</Link>
+                    <ListGroup className={style.list}>
+                        <ListGroup.Item className="fw-semi-bold text-muted">
+                        <br/><small>OEM: {dealer.oem}</small>
+                        <br/><small>Platform: {dealer.platform}</small>
+                        </ListGroup.Item>
+                    </ListGroup>
+                    <Link className={style.right} outline color="success" to={`/app/main/dealers/${dealer._id}/update`}>Update</Link>
                 </CardBody>
             </Card>
         )

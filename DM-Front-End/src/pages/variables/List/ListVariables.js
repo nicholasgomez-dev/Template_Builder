@@ -1,4 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
+import { Col, Row, Progress } from 'reactstrap';
+import Widget from '../../../components/Widget';
+import s from './ListVariables.module.scss';
 import API from '../../../actions/portalAPI';
 import Loader from "../../../components/Loader";
 import VariablesTable from './VariablesTable';
@@ -24,12 +27,28 @@ const ListVariables = () => {
     return (
         <Fragment>
             <h1 className="page-title">View Variables</h1>
-            {
-                loading ? <Loader size={75} /> 
-                : error ? <p>Something went wrong please try again later.</p>
-                : (variables.length === 0) ? <p>No variables found.</p>
-                : <VariablesTable variables={variables} /> 
-            }
+            <div className={s.sidesWrapper}>
+                <div className={s.analyticsSide}>
+                    <Row>                         
+                        <Col xs={12} className={s.cardWrapper}>
+                            <Widget
+                            className={'pb-0'}
+                            bodyClass={`mt p-0`}
+                                title={<h4><strong></strong></h4>}
+                                style={{backgroundColor: "transparent", boxShadow: "none"}}
+                            >
+                                {
+                                    loading ? <Loader size={75} /> 
+                                    : error ? <p>Something went wrong please try again later.</p>
+                                    : (variables.length === 0) ? <p>No variables found.</p>
+                                    : <VariablesTable variables={variables} /> 
+                                }
+                            </Widget>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
+
         </Fragment>
     )
 }

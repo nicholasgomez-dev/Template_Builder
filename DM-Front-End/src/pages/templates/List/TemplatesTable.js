@@ -1,6 +1,9 @@
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom';
 import { Row, Col, Badge, Card, CardBody, CardTitle, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
+import ListGroup from 'react-bootstrap/ListGroup';
+import s from './ListTemplatesTable.module.scss';
+import style from './ListTemplatesCard.module.scss'
 
 const TemplatesTable = (props) => {
     const { templates } = props
@@ -10,20 +13,20 @@ const TemplatesTable = (props) => {
 
         return (
             <Card>
-                <CardTitle>
+                <CardTitle className={style.header}>
                     <h4>{template.name}</h4>
                 </CardTitle>
                 <CardBody>
-                    <CardText>
-                        {template.description}
+                    <CardText className={style.text}>
+                        <small>{template.description}</small>
                     </CardText>
-                    <CardText>
-                        {template.oem}
-                    </CardText>
-                    <CardText>
-                        {template.platform}
-                    </CardText>
-                    <Link to={`/app/main/templates/${template._id}/update`}>Update</Link>
+                    <ListGroup className={style.list}>
+                        <ListGroup.Item className="fw-semi-bold text-muted">
+                        <br/><small>OEM: {template.oem}</small>
+                        <br/><small>Platform: {template.platform}</small>
+                        </ListGroup.Item>
+                    </ListGroup>
+                    <Link className={style.right} outline color="success" to={`/app/main/templates/${template._id}/update`}>Update</Link>
                 </CardBody>
             </Card>
         )

@@ -1,0 +1,51 @@
+@import '../../../styles/variables.scss';
+
+.right{
+  float: right;
+  margin-bottom: 10px;
+  background-color: #1A86D0;
+  color: white;
+  box-sizing: border-box;
+  padding: 0.5em 1em;
+  border-radius: 20px;
+}
+
+.header{
+  
+  background: #4d8cb9;
+  padding: 15px;
+  color: white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: flex-start;
+
+  h4 {
+    font-size: 16px;
+    margin-bottom: 0;
+    text-overflow: ellipsis;
+    width: calc(100% - 30px);
+    white-space: nowrap;
+    overflow: hidden;
+    
+
+    @media (max-width: 1280px) {
+      font-size: 15px;
+    }
+  }
+}
+
+.card {
+  border-radius: 5px;
+
+}
+
+.hidden{
+  display: none !important;
+}
+
+.list{
+  margin-bottom: 25px;
+}
