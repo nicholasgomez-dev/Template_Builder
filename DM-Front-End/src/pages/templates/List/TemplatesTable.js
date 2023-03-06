@@ -28,7 +28,6 @@ const TemplatesTable = (props) => {
                         </ListGroup.Item>
                     </ListGroup>
                     <Link className={style.right} outline color="success" to={`/app/main/templates/${template._id}/update`}>Update</Link>
-                    <Link className={style.right} outline color="success" to={`/app/main/templates/${template._id}/build`}>Build</Link>
                 </CardBody>
             </Card>
         )

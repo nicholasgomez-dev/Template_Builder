@@ -23,6 +23,7 @@ const DealersTable = (props) => {
                         </ListGroup.Item>
                     </ListGroup>
                     <Link className={style.right} outline color="success" to={`/app/main/dealers/${dealer._id}/update`}>Update</Link>
+                    <Link className={style.right} outline color="success" to={`/app/main/templates/${dealer._id}/build`}>Build</Link>
                 </CardBody>
             </Card>
         )
