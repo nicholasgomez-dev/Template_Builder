@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Redirect } from 'react-router-dom';
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Loader from '../../../components/Loader/Loader';
 import { Controlled as CodeMirror } from 'react-codemirror2'
+import styles from './CreateTemplate.module.scss'
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css'
 import 'codemirror/mode/htmlmixed/htmlmixed'
@@ -14,18 +15,27 @@ const CreateTemplate = () => {
     const [message, setMessage] = useState(null);
     const [success, setSuccess] = useState(null);
     const [settings, setSettings] = useState([]);
+    const [variables, setVariables] = useState([]);
+    const [databaseVariables, setDatabaseVariables] = useState([]);
     const [formData, setFormData] = useState({});
     const [oemDropdownOpen, setOemDropdownOpen] = useState(false);
     const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
     const [redirect, setRedirect] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
+    // Use ref to access Variables list instance
+    const variablesList = useRef(null);
+
     // Get OEM and Platform lists on load
     useEffect(() => {
         setLoading(true);
-        API.get('/api/templatebuilder/settings/')
+        Promise.all([API.get('/api/templatebuilder/settings/'), API.get('/api/templatebuilder/variables/')])
             .then(res => {
-                setSettings(res.data);
+                let DB_Variables = res[1].data.map(variable => {
+                    return variable.value;
+                })
+                setDatabaseVariables(DB_Variables);
+                setSettings(res[0].data);
                 setLoading(false);
             })
             .catch(err => {
@@ -49,6 +59,7 @@ const CreateTemplate = () => {
         setFormData(prevState => {return { ...prevState, platform: e.target.innerText}});
     }
     function handleCodeMirrorInput(value) {
+        setVariables([...new Set(value.match(/{{.*?}}/g))]);
         setFormData(prevState => {return { ...prevState, html: value}});
     }
     function handleNameInput(value) {
@@ -86,7 +97,6 @@ const CreateTemplate = () => {
         return new Promise((resolve, reject) => {
             let html = formData.html;
             let variables = html.match(/{{.*?}}/g);
-            console.log(variables)
             let uniqueVariables = [...new Set(variables)];
             // If no variables are found, return false
             if (uniqueVariables.length === 0) {
@@ -186,10 +196,30 @@ const CreateTemplate = () => {
                                     </DropdownMenu>
                                 </Dropdown>
                             </FormGroup>
-                            <FormGroup>
-                                <Label for="html">Upload Minified HTML<span style={{color:'red'}}>*</span></Label>
-                                <CodeMirror name="html" required value={formData.html ? formData.html : ''} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} onBeforeChange={(editor, data, value) => handleCodeMirrorInput(value)} />
-                            </FormGroup>
+                            <div className="split-container">
+                                <div className="split-container-left">
+                                    <FormGroup>
+                                        <Label for="html">Upload Minified HTML<span style={{color:'red'}}>*</span></Label>
+                                        <CodeMirror name="html" required value={formData.html ? formData.html : ''} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} onBeforeChange={(editor, data, value) => handleCodeMirrorInput(value)} />
+                                    </FormGroup>
+                                </div>
+                                <div className="split-container-right">
+                                    <div className="variables-container">
+                                    <Label>Variables Found/Missing</Label>
+                                        <ul ref={variablesList} id="variables-list">
+                                            {(variables.length > 0) ? variables.map((variable, index) => {
+                                                // if variable is found in databaseVariables
+                                                if (databaseVariables.includes(variable)) {
+                                                    return <li key={index} className={styles.found}>{variable} - Found in Database</li>
+                                                }
+                                                return <li key={index} className={styles.missing}>{variable} - Missing From Database</li>
+                                            }) : ''}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             {
                             submitted ? 
                                 <Loader /> 
