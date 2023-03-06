@@ -5,16 +5,19 @@ import API from '../../../actions/portalAPI';
 import Loader from "../../../components/Loader";
 import DealersTable from './DealersTable';
 import s from './ListDealers.module.scss';
+import { filter } from 'lodash';
 
 const ListDealers = () => {
     const [loading, setLoading] = useState(true);
     const [dealers, setDealers] = useState([]);
+    const [filtered, setFiltered] = useState([]);
     const [error, setError] = useState(false);
 
     useEffect(() => {
         API.get('/api/templatebuilder/dealers/')
             .then(res => {
                 setDealers(res.data);
+                setFiltered(res.data);
                 setLoading(false);
             })
             .catch(err => {
@@ -24,9 +27,19 @@ const ListDealers = () => {
             })
     }, [])
 
+    // Input handler for search bar
+    const searchDealers = (e) => {
+        const search = e.target.value.toLowerCase();
+        const filteredDealers = dealers.filter(dealer => {
+            return dealer.name.toLowerCase().includes(search);
+        })
+        setFiltered(filteredDealers);
+    }
+
     return (
         <Fragment>
             <h1 className="page-title">View Dealers</h1>
+            <input className={["form-control", s.search].join(' ') } type="text" placeholder="Search Dealers" onChange={(e) => searchDealers(e)}/>
             <div className={s.sidesWrapper}>
                 <div className={s.analyticsSide}>
                     <Row>                         
@@ -41,7 +54,7 @@ const ListDealers = () => {
                                     loading ? <Loader size={75} /> 
                                     : error ? <p>Something went wrong please try again later.</p>
                                     : (dealers.length === 0) ? <p>No dealers found.</p>
-                                    : <DealersTable dealers={dealers} />
+                                    : <DealersTable dealers={filtered} />
                                 }
                             </Widget>
                         </Col>

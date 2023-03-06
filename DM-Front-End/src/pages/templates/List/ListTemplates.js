@@ -9,12 +9,14 @@ import TemplatesTable from './TemplatesTable';
 const ListTemplates = () => {
     const [loading, setLoading] = useState(true);
     const [templates, setTemplates] = useState([]);
+    const [filtered, setFiltered] = useState([]);
     const [error, setError] = useState(false);
 
     useEffect(() => {
         API.get('/api/templatebuilder/templates/')
             .then(res => {
                 setTemplates(res.data);
+                setFiltered(res.data);
                 setLoading(false);
             })
             .catch(err => {
@@ -24,9 +26,20 @@ const ListTemplates = () => {
             })
     }, [])
 
+    // Input handler for search bar
+    const searchTemplates = (e) => {
+        const search = e.target.value.toLowerCase();
+        const filteredTemplates = templates.filter(template => {
+            return template.name.toLowerCase().includes(search);
+        })
+        setFiltered(filteredTemplates);
+    }
+
+
     return (
         <Fragment>
             <h1 className="page-title">View Templates</h1>
+            <input className={["form-control", s.search].join(' ') } type="text" placeholder="Search Templates" onChange={(e) => searchTemplates(e)}/>
             <div className={s.sidesWrapper}>
                 <div className={s.analyticsSide}>
                     <Row>                         
@@ -41,7 +54,7 @@ const ListTemplates = () => {
                             loading ? <Loader size={75} /> 
                             : error ? <p>Something went wrong please try again later.</p>
                             : (templates.length === 0) ? <p>No templates found.</p>
-                            : <TemplatesTable templates={templates} />
+                            : <TemplatesTable templates={filtered} />
                         }
                             </Widget>
                         </Col>
