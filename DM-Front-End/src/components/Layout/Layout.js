@@ -185,7 +185,7 @@ class Layout extends React.Component {
                     {/*Templates*/}
                     <Route path="/app/main/templates" exact component={ListTemplates} />
                     <Route path="/app/main/templates/create" exact component={CreateTemplate} />
-                    <Route path="/app/main/templates/build" exact component={BuildTemplate} />
+                    <Route path="/app/main/templates/:id/build" exact component={BuildTemplate} />
                     <Route path="/app/main/templates/:id/update" exact component={UpdateTemplate} />
 
                     {/*Dealers*/}

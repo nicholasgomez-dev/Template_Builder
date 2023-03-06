@@ -107,9 +107,6 @@ class Sidebar extends React.Component {
                                     header: 'Create Templates', link: '/app/main/templates/create', exact: true
                                 },
                                 {
-                                    header: 'Build Template', link: '/app/main/templates/build',
-                                },
-                                {
                                     header: 'View Templates', link: '/app/main/templates',
                                 }
                             ]}

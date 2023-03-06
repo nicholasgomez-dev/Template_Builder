@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Redirect } from 'react-router-dom';
 import _ from "lodash";
 import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Loader from '../../../components/Loader/Loader';
 import { Controlled as CodeMirror } from 'react-codemirror2'
+import styles from './UpdateTemplate.module.scss'
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css'
 import 'codemirror/mode/htmlmixed/htmlmixed'
@@ -15,6 +16,8 @@ const UpdateTemplate = (props) => {
     const [template, setTemplate] = useState({});
     const [formData, setFormData] = useState({});
     const [settings, setSettings] = useState({});
+    const [variables, setVariables] = useState([]);
+    const [databaseVariables, setDatabaseVariables] = useState([]);
     const [message, setMessage] = useState('');
     const [success, setSuccess] = useState(false);
     const [oemDropdownOpen, setOemDropdownOpen] = useState(false);
@@ -22,13 +25,23 @@ const UpdateTemplate = (props) => {
     const [submitted, setSubmitted] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
+    // Use ref to access Variables list instance
+    const variablesList = useRef(null);
+
     useEffect(() => {
         setSuccess(false);
-        Promise.all([API.get('/api/templatebuilder/settings/'), API.get(`/api/templatebuilder/templates/search?_id=${props.match.params.id}`)])
+        Promise.all([
+            API.get('/api/templatebuilder/settings/'), 
+            API.get(`/api/templatebuilder/templates/search?_id=${props.match.params.id}`),
+            API.get('/api/templatebuilder/variables/')])
             .then(res => {
+                let DB_Variables = res[2].data.map(variable => {
+                    return variable.value;
+                })
                 setSettings(res[0].data);
                 setFormData(res[1].data[0]);
                 setTemplate(res[1].data[0]);
+                setDatabaseVariables(DB_Variables);
                 setLoading(false);
             })
             .catch(err => {
@@ -55,6 +68,7 @@ const UpdateTemplate = (props) => {
         setFormData(prevState => {return { ...prevState, platform: e.target.innerText}});
     }
     function handleCodeMirrorInput(value) {
+        setVariables([...new Set(value.match(/{{.*?}}/g))]);
         setFormData(prevState => {return { ...prevState, html: value}});
     }
     function handleDescriptionInput(value) {
@@ -210,10 +224,28 @@ const UpdateTemplate = (props) => {
                                 </DropdownMenu>
                             </Dropdown>
                         </FormGroup>
-                        <FormGroup>
-                            <Label for="html">Upload Minified HTML<span style={{color:'red'}}>*</span></Label>
-                            <CodeMirror name="html" required value={formData.html} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} onBeforeChange={(editor, data, value) => handleCodeMirrorInput(value)} />
-                        </FormGroup>
+                        <div className="split-container">
+                                <div className="split-container-left">
+                                    <FormGroup>
+                                        <Label for="html">Upload Minified HTML<span style={{color:'red'}}>*</span></Label>
+                                        <CodeMirror name="html" required value={formData.html} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} onBeforeChange={(editor, data, value) => handleCodeMirrorInput(value)} />
+                                    </FormGroup>
+                                </div>
+                                <div className="split-container-right">
+                                    <div className="variables-container">
+                                    <Label>Variables Found/Missing</Label>
+                                        <ul ref={variablesList} id="variables-list">
+                                            {(variables.length > 0) ? variables.map((variable, index) => {
+                                                // if variable is found in databaseVariables
+                                                if (databaseVariables.includes(variable)) {
+                                                    return <li key={index} className={styles.found}>{variable} - Found in Database</li>
+                                                }
+                                                return <li key={index} className={styles.missing}>{variable} - Missing From Database</li>
+                                            }) : ''}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         {
                             submitted ? 
                                 <Loader /> 
