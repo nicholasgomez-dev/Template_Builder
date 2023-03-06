@@ -47,6 +47,7 @@ module.exports = {
         newTemplate.created_at = new Date();
         newTemplate.updated_by = null
         newTemplate.updated_at = null
+        newTemplate.version = 1
 
         insertDocument('Template_Builder', 'Templates', newTemplate, process.env.TB_MONGO_URI)
             .then(result => {
@@ -58,47 +59,30 @@ module.exports = {
             })
     },
     updateTemplate: (req, res) => {
+        // Get new template
         let updatedTemplate = req.body;
+        // Set updated by and updated at
         updatedTemplate.updated_by = res.locals.dm_user_information.nickname;
         updatedTemplate.updated_at = new Date();
-        Promise.all([readAllDocuments('Template_Builder', 'Templates', {}, req.query, process.env.TB_MONGO_URI), readAllDocuments('Template_Builder', 'History', {}, { template_id: req.query._id }, process.env.TB_MONGO_URI)])
+        readAllDocuments('Template_Builder', 'Templates', {}, req.query, process.env.TB_MONGO_URI)
             .then(result => {
-                let history = result[1][0];
-                let template = result[0][0];
-                // If no history found
-                if (!history) {
-                    history = {
-                        template_id: req.query._id,
-                        history: []
-                    }
-                    history.history.push(template)
-                    // Insert new history
-                    Promise.all([insertDocument('Template_Builder', 'History', history, process.env.TB_MONGO_URI), updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', updatedTemplate, process.env.TB_MONGO_URI)])
-                        .then(result => {
-                            res.json(result)
-                        })
-                        .catch(err => {
-                            console.log(err)
-                            res.json(err)
-                        })
-                } else {
-                    // If history found
-                    history.history.push(template)
-                    // Update history
-                    Promise.all([updateDocumentField('Template_Builder', 'History', history._id, {}, '', history, process.env.TB_MONGO_URI), updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', updatedTemplate, process.env.TB_MONGO_URI)])
-                        .then(result => {
-                            res.json(result)
-                        })
-                        .catch(err => {
-                            console.log(err)
-                            res.json(err)
-                        })
-                }
+                let oldTemplate = result[0]
+                updatedTemplate.version = oldTemplate.version + 1
+                let historyObject = {...oldTemplate, template_id: oldTemplate._id}
+                delete historyObject._id
+                Promise.all([insertDocument('Template_Builder', 'History', historyObject, process.env.TB_MONGO_URI), updateDocumentField('Template_Builder', 'Templates', req.query._id, {}, '', updatedTemplate, process.env.TB_MONGO_URI)])
+                    .then(result => {
+                        res.json(result)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        res.json(err)
+                    })
             })
             .catch(err => {
                 console.log(err)
                 res.json(err)
-            })
+            })                    
     },
     // Dealer Controllers
     getAllDealers: (req, res) => {

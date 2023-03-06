@@ -24,6 +24,7 @@ const TemplatesTable = (props) => {
                         <ListGroup.Item className="fw-semi-bold text-muted">
                         <br/><small>OEM: {template.oem}</small>
                         <br/><small>Platform: {template.platform}</small>
+                        <br/><small>Version: {template.version}</small>
                         </ListGroup.Item>
                     </ListGroup>
                     <Link className={style.right} outline color="success" to={`/app/main/templates/${template._id}/update`}>Update</Link>
