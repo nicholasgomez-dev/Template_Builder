@@ -96,7 +96,6 @@ const BuildTemplate = (props) => {
         const [loadingBuilder, setLoadingBuilder] = useState(true);
         const [errorBuilder, setErrorBuilder] = useState(false);
         const [messageBuilder, setMessageBuilder] = useState('');
-        const [uniqueVariables, setUniqueVariables] = useState([]);
         const [databaseVariables, setDatabaseVariables] = useState([]);
         const [formData, setFormData] = useState({});
 
@@ -122,12 +121,9 @@ const BuildTemplate = (props) => {
             for (let i = 0; i < uniqueVars.length; i++) {
                 queryString += `&value=${uniqueVars[i]}`;
             }
-            console.log(queryString)
             API.get(`/api/templatebuilder/variables/filter?${queryString}`)
             .then(res => {
-                console.log(res.data)
                 setDatabaseVariables(res.data);
-                setUniqueVariables(uniqueVars);
                 setFormData(initFormData);
                 setLoadingBuilder(false);
             })
@@ -139,7 +135,7 @@ const BuildTemplate = (props) => {
         }, []);
 
         // Input handlers
-        const handleInputChange = (e) => {
+        function handleInputChange(e) {
             let newFormData = {...formData};
             newFormData[e.target.name] = e.target.value;
             for (let i = 0; i < buildTemplates.length; i++) {
@@ -168,7 +164,7 @@ const BuildTemplate = (props) => {
                     
                     // Ready to build
                     :
-                    <div className="builder-split-container">
+                    <div className={styles["builder-split-container"]}>
                         <div className="builder-left">
                             {databaseVariables.map((variable, index) => {
                                 return (
@@ -184,7 +180,7 @@ const BuildTemplate = (props) => {
                                 return (
                                     <Card key={index}>
                                         <CardHeader>
-                                            {template.name}
+                                            {template.name} - <span onClick={() => navigator.clipboard.writeText(template.changedHTML)}>Copy to Clipboard</span>
                                         </CardHeader>
                                         <CardBody>
                                             <CodeMirror name="html" required value={template.changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
