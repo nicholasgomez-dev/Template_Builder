@@ -121,6 +121,7 @@ const BuildTemplate = (props) => {
             for (let i = 0; i < uniqueVars.length; i++) {
                 queryString += `&value=${uniqueVars[i]}`;
             }
+            console.log(queryString)
             API.get(`/api/templatebuilder/variables/filter?${queryString}`)
             .then(res => {
                 setDatabaseVariables(res.data);
@@ -149,20 +150,23 @@ const BuildTemplate = (props) => {
             }
             setFormData(newFormData);
         }
-        function handleSaveVariables() {
-            // If every field in formdata is filled out
-            for (let key in formData) {
-                if (formData[key] === '') {
-                    setMessageBuilder('Please fill out all fields.');
-                    return;
-                }
-            }
-            // Push formdata to dealer.variables array
-            let newDealer = {...dealer};
-            newDealer.variables.push(formData);
-            // Update dealer in database
+
+        console.log(databaseVariables)
+
+        // function handleSaveVariables() {
+        //     // If every field in formdata is filled out
+        //     for (let key in formData) {
+        //         if (formData[key] === '') {
+        //             setMessageBuilder('Please fill out all fields.');
+        //             return;
+        //         }
+        //     }
+        //     // Push formdata to dealer.variables array
+        //     let newDealer = {...dealer};
+        //     newDealer.variables.push(formData);
+        //     // Update dealer in database
             
-        }
+        // }
         
         return (
             <div>

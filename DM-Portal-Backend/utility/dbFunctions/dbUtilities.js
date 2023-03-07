@@ -79,7 +79,7 @@ module.exports.findManyDocuments = (db, collection, filter = {}, projectFields =
     let altFilter = {};
     delete filter._id;
     for (let key in filter) {
-        if (filter[key].isArray) {
+        if (typeof filter[key] === 'object') {
             altFilter[key] = {$in: 
                 filter[key]
             }
@@ -89,7 +89,6 @@ module.exports.findManyDocuments = (db, collection, filter = {}, projectFields =
             }
         }
     }
-    console.log(filter)
 
     const client = new MongoClient(MongoUri, {
         useNewUrlParser: true,
