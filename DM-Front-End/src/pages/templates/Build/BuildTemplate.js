@@ -149,6 +149,20 @@ const BuildTemplate = (props) => {
             }
             setFormData(newFormData);
         }
+        function handleSaveVariables() {
+            // If every field in formdata is filled out
+            for (let key in formData) {
+                if (formData[key] === '') {
+                    setMessageBuilder('Please fill out all fields.');
+                    return;
+                }
+            }
+            // Push formdata to dealer.variables array
+            let newDealer = {...dealer};
+            newDealer.variables.push(formData);
+            // Update dealer in database
+            
+        }
         
         return (
             <div>
