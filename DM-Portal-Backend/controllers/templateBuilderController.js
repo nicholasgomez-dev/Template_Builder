@@ -112,6 +112,7 @@ module.exports = {
         updateDocumentField('Template_Builder', 'Dealers', req.query._id, {}, '', updatedDealer, process.env.TB_MONGO_URI)
             .then(result => {
                 console.log(result)
+                result.status = 200
                 res.json(result)
             })
             .catch(err => {
@@ -123,9 +124,9 @@ module.exports = {
         let newDealer = req.body;
         newDealer.created_by = res.locals.dm_user_information.nickname;
         newDealer.created_at = new Date();
-        newDealer.updated_by = null
-        newDealer.updated_at = null
-        newDealer.variables = []
+        newDealer.updated_by = null;
+        newDealer.updated_at = null;
+        newDealer.variables = {};
         insertDocument('Template_Builder', 'Dealers', newDealer, process.env.TB_MONGO_URI)
             .then(result => {
                 res.json(result)

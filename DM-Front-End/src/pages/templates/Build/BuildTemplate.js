@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from "react";
 import API from '../../../actions/portalAPI';
-import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, Card, CardBody, CardTitle, CardHeader, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
+import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, Card, CardBody, CardTitle, CardHeader, CardText, CardImg, CardGroup, CardColumns, Button } from 'reactstrap';
 import Loader from '../../../components/Loader/Loader';
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import styles from './BuildTemplate.module.scss';
@@ -28,12 +28,14 @@ const BuildTemplate = (props) => {
                     })
                     .catch(err => {
                         console.log(err);
+                        setMessage('Error loading templates.');
                         setError(true);
                         setLoading(false);
                     })
             })
             .catch(err => {
                 console.log(err);
+                setMessage('Error loading dealer.');
                 setError(true);
                 setLoading(false);
             })
@@ -41,6 +43,10 @@ const BuildTemplate = (props) => {
 
     // Input handlers
     function handleBuilder() {
+        if (selectedTemplates.length < 1) {
+            setMessage('Please select at least one template.');
+            return;
+        }
         setBuilder(true);
     }
     function handleTemplateSelect(template) {
@@ -89,6 +95,7 @@ const BuildTemplate = (props) => {
                     </CardColumns>
                 </div>
                 <input type="button" value="Build" onClick={() => handleBuilder()} />
+                {message && <p>{message}</p>}
             </div>
         )
     }
@@ -98,6 +105,8 @@ const BuildTemplate = (props) => {
         const [messageBuilder, setMessageBuilder] = useState('');
         const [databaseVariables, setDatabaseVariables] = useState([]);
         const [formData, setFormData] = useState({});
+        const [updatingDealer, setUpdatingDealer] = useState(false);
+        const [dealerUpdated, setDealerUpdated] = useState(false);
 
         let { buildTemplates } = props;
 
@@ -114,6 +123,20 @@ const BuildTemplate = (props) => {
             let initFormData = {};
             for (let i = 0; i < uniqueVars.length; i++) {
                 initFormData[uniqueVars[i]] = '';
+                if (dealer.variables[uniqueVars[i]]) {
+                    initFormData[uniqueVars[i]] = dealer.variables[uniqueVars[i]];
+                }
+            }
+
+            // Find and replace all values from initial form data
+            for (let i = 0; i < buildTemplates.length; i++) {
+                let newStr = buildTemplates[i].html
+                for (let key in initFormData) {
+                    if (initFormData[key] !== '') {
+                        newStr = newStr.replaceAll(key, initFormData[key]);
+                    }
+                }
+                buildTemplates[i].changedHTML = newStr;
             }
 
             // Get all variables from database
@@ -121,7 +144,6 @@ const BuildTemplate = (props) => {
             for (let i = 0; i < uniqueVars.length; i++) {
                 queryString += `&value=${uniqueVars[i]}`;
             }
-            console.log(queryString)
             API.get(`/api/templatebuilder/variables/filter?${queryString}`)
             .then(res => {
                 setDatabaseVariables(res.data);
@@ -130,6 +152,7 @@ const BuildTemplate = (props) => {
             })
             .catch(err => {
                 console.log(err);
+                setMessageBuilder('Error loading template builder.');
                 setErrorBuilder(true);
                 setLoadingBuilder(false);
             })
@@ -137,6 +160,8 @@ const BuildTemplate = (props) => {
 
         // Input handlers
         function handleInputChange(e) {
+            setMessageBuilder(null);
+            setDealerUpdated(false);
             let newFormData = {...formData};
             newFormData[e.target.name] = e.target.value;
             for (let i = 0; i < buildTemplates.length; i++) {
@@ -150,23 +175,66 @@ const BuildTemplate = (props) => {
             }
             setFormData(newFormData);
         }
+        function handleSaveVariables() {
+            setMessageBuilder(null);
+            setDealerUpdated(false);
+            setUpdatingDealer(true);
+            // If every field in formdata is filled out
+            for (let key in formData) {
+                if (formData[key] === '') {
+                    setMessageBuilder('Please fill out all fields.');
+                    setUpdatingDealer(false);
+                    return;
+                }
+            }
+            // Push formdata to dealer.variables array
+            let updatedDealer = {...dealer};
+            for (let key in formData) {
+                updatedDealer.variables[key] = formData[key];
+            }
+            // Update dealer in database
+            delete updatedDealer._id;
+            API.post(`/api/templatebuilder/dealers/update?_id=${dealer._id}`, updatedDealer)
+                .then(() => {
+                    setDealerUpdated(true);
+                    setUpdatingDealer(false);
+                })
+                .catch(err => {
+                    console.log(err);
+                    setDealerUpdated(false);
+                    setUpdatingDealer(true);
+                    setMessageBuilder('Error saving dealer variables.');
+                });
+        }
 
-        console.log(databaseVariables)
+        // Render JSX
+        const TemplateAccordion = (props) => {
+            const { template } = props;
+            const [completed, setCompleted] = useState(false);
 
-        // function handleSaveVariables() {
-        //     // If every field in formdata is filled out
-        //     for (let key in formData) {
-        //         if (formData[key] === '') {
-        //             setMessageBuilder('Please fill out all fields.');
-        //             return;
-        //         }
-        //     }
-        //     // Push formdata to dealer.variables array
-        //     let newDealer = {...dealer};
-        //     newDealer.variables.push(formData);
-        //     // Update dealer in database
-            
-        // }
+            useEffect(() => {
+                // Find all variables inside template.changedHTML, if vars exist, set color of header to green
+                let vars = template.changedHTML.match(/{{.*?}}/g);
+                if (vars === null) {
+                    setCompleted(true);
+                } else if (vars.length > 0) {
+                    setCompleted(false);
+                }
+            }, [template.changedHTML])
+
+            return (
+                <div>
+                    <Card>
+                        <CardHeader style={completed ? {backgroundColor: 'lightgreen'} : {}}>
+                            {template.name} - <span onClick={() => navigator.clipboard.writeText(template.changedHTML)}>Copy to Clipboard</span><p onClick={() => console.log(completed)}>completed</p>
+                        </CardHeader>
+                        <CardBody>
+                            <CodeMirror name="html" required value={template.changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
+                        </CardBody>
+                    </Card>
+                </div>
+            )
+        }
         
         return (
             <div>
@@ -188,7 +256,7 @@ const BuildTemplate = (props) => {
                                 return (
                                     <FormGroup key={index}>
                                         <Label for={variable.value}>{variable.value} - {variable.description}</Label>
-                                        <Input type="text" name={variable.value} id={variable.name} placeholder={variable.value} onChange={(e) => handleInputChange(e)}/>
+                                        <Input type="text" name={variable.value} id={variable.name} onChange={(e) => handleInputChange(e)} value={formData[variable.value]}/>
                                     </FormGroup>
                                 )
                             })}
@@ -196,20 +264,25 @@ const BuildTemplate = (props) => {
                         <div className="builder-right">
                             {buildTemplates.map((template, index) => {
                                 return (
-                                    <Card key={index}>
-                                        <CardHeader>
-                                            {template.name} - <span onClick={() => navigator.clipboard.writeText(template.changedHTML)}>Copy to Clipboard</span>
-                                        </CardHeader>
-                                        <CardBody>
-                                            <CodeMirror name="html" required value={template.changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
-                                        </CardBody>
-                                    </Card>
+                                    <TemplateAccordion key={index} template={template} />
                                 )
                             })}
                         </div>
                     </div>
                 }
-                <input type="button" value="Save Variables" onClick={() => console.log('Saving variables...')} />
+                {   
+                    // Updating dealer variables
+                    updatingDealer ? 
+                    <Loader />
+
+                    // If dealer variables updated
+                    : (!updatingDealer && dealerUpdated) ?
+                    <p style={{color: 'green'}}>Successfully saved dealer variables.</p>
+
+                    // Before updating dealer variables
+                    :
+                    <input type="button" value="Save Variables" onClick={() => handleSaveVariables()} />
+                }
                 {messageBuilder && <p>{messageBuilder}</p>}
             </div>
         )
