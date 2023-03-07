@@ -74,6 +74,33 @@ module.exports.readAllDocuments = (db, collection, projectFields = {}, filter = 
     })
 }
 
+module.exports.findManyDocuments = (db, collection, filter = {}, projectFields = {}, AltURI) => {
+    if (AltURI) MongoUri = AltURI
+    let altFilter = {};
+    delete filter._id;
+    for (let key in filter) {
+        altFilter[key] = {$in: 
+            filter[key]
+        }
+    }
+
+    const client = new MongoClient(MongoUri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+    return new Promise((resolve, reject) => {
+        client.connect((err, client) => {
+            if (err) return reject(err)
+            const dbConn = client.db(db)
+
+            dbConn.collection(collection).find(altFilter).project(projectFields).toArray()
+            .then(docs => resolve(docs))
+            .catch(err => reject(err))
+            .finally(() => client.close())
+        })
+    })
+}
+
 /**
  * 
  * @param {String} db - DB name

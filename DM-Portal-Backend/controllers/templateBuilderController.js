@@ -1,4 +1,4 @@
-const { readAllDocuments, insertDocument, updateDocumentField } = require('../utility/dbFunctions/dbUtilities');
+const { readAllDocuments, insertDocument, updateDocumentField, findManyDocuments } = require('../utility/dbFunctions/dbUtilities');
 require('dotenv').config();
 
 module.exports = {
@@ -177,6 +177,17 @@ module.exports = {
         updatedVariable.updated_by = res.locals.dm_user_information.nickname;
         updatedVariable.updated_at = new Date();
         updateDocumentField('Template_Builder', 'Variables', req.query._id, {}, '', updatedVariable, process.env.TB_MONGO_URI)
+        .then(result => {
+            console.log(result)
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(err)
+            res.json(err)
+        })
+    },
+    filterVariables: (req, res) => {
+        findManyDocuments('Template_Builder', 'Variables', req.body, {}, process.env.TB_MONGO_URI)
         .then(result => {
             console.log(result)
             res.json(result)

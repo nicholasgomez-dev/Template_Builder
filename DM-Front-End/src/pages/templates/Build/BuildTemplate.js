@@ -7,219 +7,217 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css'
 import 'codemirror/mode/htmlmixed/htmlmixed'
 
-const BuildTemplate = () => {
+const BuildTemplate = (props) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [message, setMessage] = useState('');
-    const [builder, setBuilder] = useState(false);
-    const [dealers, setDealers] = useState([]);
-    const [selectedDealer, setSelectedDealer] = useState(null);
-    const [dealerDropdownOpen, setDealerDropdownOpen] = useState(false);
-    const [fetchingTemplates, setFetchingTemplates] = useState(false);
+    const [dealer, setDealer] = useState(false);
     const [templates, setTemplates] = useState([]);
     const [selectedTemplates, setSelectedTemplates] = useState([]);
+    const [builder, setBuilder] = useState(false);
 
-    let selectedTemplatesArr = [];
-
-    // Get dealer list on load
     useEffect(() => {
-        API.get('/api/templatebuilder/dealers/')
-        .then(res => {
-            setDealers(res.data);
-            setLoading(false);
-        })
-        .catch(err => {
-            console.log(err);
-            setError(true);
-            setLoading(false);
-        })
-    }, [])
+        API.get(`/api/templatebuilder/dealers/search?_id=${props.match.params.id}`)
+            .then(res => {
+                setDealer(res.data[0]);
+                API.get(`/api/templatebuilder/templates/filter?oem=${res.data[0].oem}&platform=${res.data[0].platform}`)
+                    .then(res => {
+                        setTemplates(res.data);
+                        setLoading(false);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        setError(true);
+                        setLoading(false);
+                    })
+            })
+            .catch(err => {
+                console.log(err);
+                setError(true);
+                setLoading(false);
+            })
+    }, []);
 
     // Input handlers
-    function toggleDealerDropdown() {
-        setDealerDropdownOpen(prevState => !prevState);
-    }
-    async function handleDealerSelect(dealer) {
-        setSelectedDealer(dealer);
-        // Fetch templates for dealer
-        setFetchingTemplates(true);
-        try {
-            const res = await API.get(`/api/templatebuilder/templates/filter?oem=${dealer.oem}&platform=${dealer.platform}`);
-            setTemplates(res.data);
-            setFetchingTemplates(false);
-        } catch (err) {
-            console.log(err);
-            setFetchingTemplates(false);
-            setMessage('Something went wrong.');
-        }
-    }
-    function handleBuildClick () {
-        setSelectedTemplates(selectedTemplatesArr);
+    function handleBuilder() {
         setBuilder(true);
     }
-
-    // Render Components
-    const TemplateCard = (props) => {
-        let { template } = props;
-        template.selected = false;
-
-        function toggleSelected() {
-            if (template.selected) {
-                selectedTemplatesArr.splice(selectedTemplatesArr.indexOf(template), 1);
-            } else {
-                selectedTemplatesArr.push(template);
-            }
-            template.selected = !template.selected;
+    function handleTemplateSelect(template) {
+        // If template is already selected, remove it from the selected templates array
+        if (template.selected) {
+            setSelectedTemplates(selectedTemplates.filter(t => t._id !== template._id));
+        } else {
+            setSelectedTemplates([...selectedTemplates, template]);
         }
+        // Toggle selected property on template
+        template.selected = !template.selected;
+    }
+
+    // Render JSX Components
+    const BuilderTemplateCard = (props) => {
+        const [isOpen, setIsOpen] = useState(false);
+
+        const { templateName, changedHTML } = props;
 
         return (
-            <Card onClick={() => toggleSelected()}>
-                <CardTitle>
-                    <h4>{template.name}</h4>
-                </CardTitle>
-                <CardBody>
-                    <CardText>
-                        {template.description}
-                    </CardText>
-                    <CardText>
-                        {template.oem}
-                    </CardText>
-                    <CardText>
-                        {template.platform}
-                    </CardText>
-                    <CardText>
-                        {template.selected ? 'Selected' : ''}
-                    </CardText>
-                </CardBody>
+            <Card>
+                <CardHeader onClick={() => setIsOpen(!isOpen)}>
+                    {templateName}
+                </CardHeader>
+                <Collapse isOpen={isOpen}>
+                    <CardBody>
+                        <CodeMirror name="html" required value={changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
+                    </CardBody>
+                </Collapse>
             </Card>
         )
     }
-    const BuildTemplateCard = (props) => {
-        let { template } = props;
-        const [variables, setVariables] = useState([]);
-        const [html, setHtml] = useState(template.html);
-        const [formData, setFormData] = useState({});
-        const [isOpen, setIsOpen] = useState(false);
-
-        useEffect(() => {
-            let vars = [...new Set(template.html.match(/{{.*?}}/g))];
-            let newFormData = {};
-            for(let i = 0; i < vars.length; i++) {
-                newFormData[vars[i]] = '';
-                if (selectedDealer?.variables[vars[i]]) {
-                    newFormData[vars[i]] = selectedDealer.variables[vars[i]];
-                }
-            }
-            let newHTML = template.html;
-            for (let key in newFormData) {
-                if (newFormData[key] !== '') {
-                    newHTML = newHTML.replaceAll(key, newFormData[key]);
-                }
-            }
-            setFormData(newFormData);
-            setHtml(newHTML);
-            setVariables(vars);
-        }, [])
-
-        // Input handlers
-        function handleInputChange(e) {
-            formData[e.target.name] = e.target.value;
-            let newString = template.html;
-            for (let key in formData) {
-                if (formData[key] !== '') {
-                    newString = newString.replaceAll(key, formData[key]);
-                }
-            }
-            setHtml(newString);
-        }
-        function handleCopyToClipboard() {
-            navigator.clipboard.writeText(html);
-        }
+    const VariableInputs = (props) => {
+        const { DbVariable } = props;
 
         return (
-            <div className="BuildCard-Container">
-                <Card>
-                    <CardHeader onClick={() => setIsOpen(!isOpen)}>
-                        {template.name}
-                    </CardHeader>
-                    <Collapse isOpen={isOpen}>
-                        <CardBody>
-                            {variables.map((variable, index) => <FormGroup><Label for={variable}>{variable}<span style={{color:'red'}}>*</span></Label><Input key={index} type="text" name={variable} value={formData[variable]} onChange={(e) => handleInputChange(e)} /></FormGroup>)}
-                            <CodeMirror name="html" required value={html} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
-                            <button onClick={() => handleCopyToClipboard()}>Copy to Clipboard</button>
-                        </CardBody>
-                    </Collapse>
-                </Card>
-                
-                
-            </div>
+            <FormGroup>
+                <Label for={DbVariable.name}>{DbVariable.value} - {DbVariable.description}</Label>
+                <Input type="text" name={DbVariable.name} id={DbVariable.value} placeholder={DbVariable.value} />
+            </FormGroup>
         )
     }
 
-    // Render Sections
-    const SelectTemplates = () => {
+    // Render JSX Sections
+    const TemplateSelection = (props) => {
+        const { filteredTemplates } = props;
+
         return (
-            <div>
-                {fetchingTemplates ? 
-                    <Loader />
-                : (templates.length > 0) ?
-                    <Fragment>
-                        <CardColumns>
-                            {templates.map((template, index) => <TemplateCard key={index} template={template} selected={false}/>)}
-                        </CardColumns>
-                        <p onClick={() => handleBuildClick()}>BUILD</p>
-                    </Fragment>
-                :
-                    <p>No templates found.</p>
-                }
+            <div className="template-selection-container">
+                <h2>Select Templates</h2>
+                <div className="template-section">
+                    <CardColumns>
+                        {filteredTemplates.map((template, index) => {
+                            return (
+                                <Card key={index} onClick={() => handleTemplateSelect(template)}>
+                                    <CardTitle>
+                                        <h4>{template.name}</h4>
+                                    </CardTitle>
+                                    <CardBody>
+                                        <CardText>
+                                            {template.description}
+                                        </CardText>
+                                        <CardText>
+                                            {template.oem}
+                                        </CardText>
+                                        <CardText>
+                                            {template.platform}
+                                        </CardText>
+                                        <CardText>
+                                            {template.selected ? 'Selected' : ''}
+                                        </CardText>
+                                    </CardBody>
+                                </Card>
+                            )
+                        })}
+                    </CardColumns>
+                </div>
+                <input type="button" value="Build" onClick={() => handleBuilder()} />
             </div>
-        )
-    }
-    const SelectDealer = () => {
-        return (
-            <div>
-                { (dealers.length > 0) ?
-                <Form>
-                    <FormGroup>
-                        <Label for="platform">Select Dealer<span style={{color:'red'}}>*</span></Label>
-                        <Dropdown name="platform" required isOpen={dealerDropdownOpen} toggle={toggleDealerDropdown} >
-                            <DropdownToggle caret>{selectedDealer?.name ? selectedDealer.name : 'Select Option'}</DropdownToggle>
-                            <DropdownMenu>
-                                {dealers.map((dealer, index) => <DropdownItem key={index} onClick={() => handleDealerSelect(dealer)}>{dealer.name}</DropdownItem>)}
-                            </DropdownMenu>
-                        </Dropdown>
-                    </FormGroup>
-                </Form> : <p>No dealers found.</p>
-                }
-            </div>    
         )
     }
     const Builder = (props) => {
-        const { templates } = props;
+        const [loadingBuilder, setLoadingBuilder] = useState(true);
+        const [errorBuilder, setErrorBuilder] = useState(false);
+        const [messageBuilder, setMessageBuilder] = useState('');
+        const [uniqueVariables, setUniqueVariables] = useState([]);
+        const [databaseVariables, setDatabaseVariables] = useState([]);
+        const [formData, setFormData] = useState({});
 
+        const { buildTemplates } = props;
+
+        useEffect(() => {
+            // Get unique variables from templates & set changedHTML field to each template
+            let variables = [];
+            for (let i = 0; i < buildTemplates.length; i++) {
+                variables.push(buildTemplates[i].html.match(/{{.*?}}/g))
+                buildTemplates[i].changedHTML = buildTemplates[i].html;
+            }
+            let uniqueVars = [...new Set(variables.flat())];
+            
+            // Set initial form data with each unique variable
+            let initFormData = {};
+            for (let i = 0; i < uniqueVars.length; i++) {
+                initFormData[uniqueVars[i]] = '';
+            }
+
+            // Get all variables from database
+            let queryString = '';
+            for (let i = 0; i < uniqueVars.length; i++) {
+                queryString += `&value=${uniqueVars[i]}`;
+            }
+            API.get(`/api/templatebuilder/variables/filter?${queryString}`)
+            .then(res => {
+                setDatabaseVariables(res.data);
+                setUniqueVariables(uniqueVars);
+                setFormData(initFormData);
+                setLoadingBuilder(false);
+            })
+            .catch(err => {
+                console.log(err);
+                setErrorBuilder(true);
+                setLoadingBuilder(false);
+            })
+        }, []);
+
+        
         return (
             <div>
-                {templates.map((template, index) => <BuildTemplateCard key={index} template={template} />)}
+                <h1 onClick={() => console.log(formData)}>Builder</h1>
+                {   
+                    // If loading
+                    loadingBuilder ?
+                    <Loader />
+
+                    // If error
+                    : errorBuilder ?
+                    <p>Something went wrong.</p>
+                    
+                    // Ready to build
+                    :
+                    <div className="builder-split-container">
+                        <div className="builder-left">
+                            {databaseVariables.map((variable, index) => <VariableInputs key={index} DbVariable={variable} />)}
+                        </div>
+                        <div className="builder-right">
+                            {buildTemplates.map((template, index) => <BuilderTemplateCard key={index} changedHTML={template.changedHTML} templateName={template.name}/>)}
+                        </div>
+                    </div>
+                }
+                <input type="button" value="Save Variables" onClick={() => console.log('Saving variables...')} />
+                {messageBuilder && <p>{messageBuilder}</p>}
             </div>
         )
     }
 
     return (
         <div>
-            <h1 className="page-title">Build Template</h1>
-            { (!builder && loading) ?
+            {   
+                // If loading
+                loading ? 
                 <Loader />
-            : error ? 
-                <p>Something went wrong</p>
-            : builder ?
-                <Builder templates={selectedTemplates}/>
-            : 
-                <Fragment>
-                    <SelectDealer />
-                    { selectedDealer && <SelectTemplates /> }
-                </Fragment>
+
+                // If error
+                : error ?
+                <p>Something went wrong.</p> 
+
+                // If builder
+                : builder ?
+                <Builder buildTemplates={selectedTemplates} />
+
+                // If templates
+                : (dealer && templates) ?
+                <TemplateSelection filteredTemplates={templates} />
+
+                // If no data
+                : ''
+
             }
-            { message && <p>{message}</p> }
         </div>
     )
 }
