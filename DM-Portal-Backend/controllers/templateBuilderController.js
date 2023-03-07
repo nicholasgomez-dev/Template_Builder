@@ -187,9 +187,8 @@ module.exports = {
         })
     },
     filterVariables: (req, res) => {
-        findManyDocuments('Template_Builder', 'Variables', req.body, {}, process.env.TB_MONGO_URI)
+        findManyDocuments('Template_Builder', 'Variables', req.query, {}, process.env.TB_MONGO_URI)
         .then(result => {
-            console.log(result)
             res.json(result)
         })
         .catch(err => {

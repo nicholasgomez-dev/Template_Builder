@@ -3,6 +3,7 @@ import API from '../../../actions/portalAPI';
 import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, Card, CardBody, CardTitle, CardHeader, CardText, CardImg, CardGroup, CardColumns } from 'reactstrap';
 import Loader from '../../../components/Loader/Loader';
 import { Controlled as CodeMirror } from 'react-codemirror2'
+import styles from './BuildTemplate.module.scss';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css'
 import 'codemirror/mode/htmlmixed/htmlmixed'
@@ -53,36 +54,6 @@ const BuildTemplate = (props) => {
         template.selected = !template.selected;
     }
 
-    // Render JSX Components
-    const BuilderTemplateCard = (props) => {
-        const [isOpen, setIsOpen] = useState(false);
-
-        const { templateName, changedHTML } = props;
-
-        return (
-            <Card>
-                <CardHeader onClick={() => setIsOpen(!isOpen)}>
-                    {templateName}
-                </CardHeader>
-                <Collapse isOpen={isOpen}>
-                    <CardBody>
-                        <CodeMirror name="html" required value={changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
-                    </CardBody>
-                </Collapse>
-            </Card>
-        )
-    }
-    const VariableInputs = (props) => {
-        const { DbVariable } = props;
-
-        return (
-            <FormGroup>
-                <Label for={DbVariable.name}>{DbVariable.value} - {DbVariable.description}</Label>
-                <Input type="text" name={DbVariable.name} id={DbVariable.value} placeholder={DbVariable.value} />
-            </FormGroup>
-        )
-    }
-
     // Render JSX Sections
     const TemplateSelection = (props) => {
         const { filteredTemplates } = props;
@@ -129,7 +100,7 @@ const BuildTemplate = (props) => {
         const [databaseVariables, setDatabaseVariables] = useState([]);
         const [formData, setFormData] = useState({});
 
-        const { buildTemplates } = props;
+        let { buildTemplates } = props;
 
         useEffect(() => {
             // Get unique variables from templates & set changedHTML field to each template
@@ -151,8 +122,10 @@ const BuildTemplate = (props) => {
             for (let i = 0; i < uniqueVars.length; i++) {
                 queryString += `&value=${uniqueVars[i]}`;
             }
+            console.log(queryString)
             API.get(`/api/templatebuilder/variables/filter?${queryString}`)
             .then(res => {
+                console.log(res.data)
                 setDatabaseVariables(res.data);
                 setUniqueVariables(uniqueVars);
                 setFormData(initFormData);
@@ -165,10 +138,25 @@ const BuildTemplate = (props) => {
             })
         }, []);
 
+        // Input handlers
+        const handleInputChange = (e) => {
+            let newFormData = {...formData};
+            newFormData[e.target.name] = e.target.value;
+            for (let i = 0; i < buildTemplates.length; i++) {
+                let newStr = buildTemplates[i].html
+                for (let key in newFormData) {
+                    if (newFormData[key] !== '') {
+                        newStr = newStr.replaceAll(key, newFormData[key]);
+                    }
+                }
+                buildTemplates[i].changedHTML = newStr;
+            }
+            setFormData(newFormData);
+        }
         
         return (
             <div>
-                <h1 onClick={() => console.log(formData)}>Builder</h1>
+                <h1>Builder</h1>
                 {   
                     // If loading
                     loadingBuilder ?
@@ -182,10 +170,28 @@ const BuildTemplate = (props) => {
                     :
                     <div className="builder-split-container">
                         <div className="builder-left">
-                            {databaseVariables.map((variable, index) => <VariableInputs key={index} DbVariable={variable} />)}
+                            {databaseVariables.map((variable, index) => {
+                                return (
+                                    <FormGroup key={index}>
+                                        <Label for={variable.value}>{variable.value} - {variable.description}</Label>
+                                        <Input type="text" name={variable.value} id={variable.name} placeholder={variable.value} onChange={(e) => handleInputChange(e)}/>
+                                    </FormGroup>
+                                )
+                            })}
                         </div>
                         <div className="builder-right">
-                            {buildTemplates.map((template, index) => <BuilderTemplateCard key={index} changedHTML={template.changedHTML} templateName={template.name}/>)}
+                            {buildTemplates.map((template, index) => {
+                                return (
+                                    <Card key={index}>
+                                        <CardHeader>
+                                            {template.name}
+                                        </CardHeader>
+                                        <CardBody>
+                                            <CodeMirror name="html" required value={template.changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
+                                        </CardBody>
+                                    </Card>
+                                )
+                            })}
                         </div>
                     </div>
                 }

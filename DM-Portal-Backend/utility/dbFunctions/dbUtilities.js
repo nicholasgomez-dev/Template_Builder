@@ -79,10 +79,17 @@ module.exports.findManyDocuments = (db, collection, filter = {}, projectFields =
     let altFilter = {};
     delete filter._id;
     for (let key in filter) {
-        altFilter[key] = {$in: 
-            filter[key]
+        if (filter[key].isArray) {
+            altFilter[key] = {$in: 
+                filter[key]
+            }
+        } else {
+            altFilter[key] = {$in: 
+                [filter[key]]
+            }
         }
     }
+    console.log(filter)
 
     const client = new MongoClient(MongoUri, {
         useNewUrlParser: true,
