@@ -1,9 +1,15 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState } from "react";
 import API from '../../../actions/portalAPI';
-import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, Card, CardBody, CardTitle, CardHeader, CardText, CardImg, CardGroup, CardColumns, Button } from 'reactstrap';
+import { FormGroup, Form, Label, Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Collapse, Card, CardBody, CardTitle, CardHeader, CardText, CardImg, CardGroup, CardColumns, Button, Col, Row, Progress } from 'reactstrap';
+import Widget from '../../../components/Widget';
+import ListGroup from 'react-bootstrap/ListGroup';
 import Loader from '../../../components/Loader/Loader';
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import styles from './BuildTemplate.module.scss';
+import card from './BuildTemplateCard.module.scss';
+import reactStrapComponents from './BuildTemplates.module.scss';
+import classnames from 'classnames';
+import s from '../../../components/Sidebar/LinksGroup/LinksGroup.module.scss';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css'
 import 'codemirror/mode/htmlmixed/htmlmixed'
@@ -68,28 +74,44 @@ const BuildTemplate = (props) => {
             <div className="template-selection-container">
                 <h2>Select Templates</h2>
                 <div className="template-section">
-                    <CardColumns>
-                        {filteredTemplates.map((template, index) => {
-                            return (
-                                <Card key={index} onClick={() => handleTemplateSelect(template)} style={(template.selected ? {backgroundColor: 'darkgrey'} : {})}>
-                                    <CardTitle>
-                                        <h4>{template.name}</h4>
-                                    </CardTitle>
-                                    <CardBody>
-                                        <CardText>
-                                            {template.description}
-                                        </CardText>
-                                        <CardText>
-                                            {template.oem}
-                                        </CardText>
-                                        <CardText>
-                                            {template.platform}
-                                        </CardText>
-                                    </CardBody>
-                                </Card>
-                            )
-                        })}
-                    </CardColumns>
+                    <div className={reactStrapComponents.sidesWrapper}>
+                        <div className={reactStrapComponents.analyticsSide}>
+                            <Row>                         
+                                <Col xs={12} className={reactStrapComponents.cardWrapper}>
+                                    <Widget
+                                    className={'pb-0'}
+                                    bodyClass={`mt p-0`}
+                                        title={<h4><strong></strong></h4>}
+                                        style={{backgroundColor: "transparent", boxShadow: "none"}}
+                                    >
+                                        <CardColumns>
+                                            {filteredTemplates.map((template, index) => {
+                                                return (
+                                                    <Card className={styles["template-card"]} key={index} onClick={() => handleTemplateSelect(template)} style={(template.selected ? {backgroundColor: 'darkgrey'} : {})}>
+                                                        <CardTitle className={card.header}>
+                                                            <h4>{template.name}</h4>
+                                                        </CardTitle>
+                                                        <CardBody>
+                                                            <CardText className={card.text}>
+                                                                {template.description}
+                                                            </CardText>
+                                                            <ListGroup className={card.list}>
+                                                                <ListGroup.Item className="fw-semi-bold text-muted">
+                                                                <br/><small>OEM: {template.oem}</small>
+                                                                <br/><small>Platform: {template.platform}</small>
+                                                                <br/><small>Version: {template.version}</small>
+                                                                </ListGroup.Item>
+                                                            </ListGroup>
+                                                        </CardBody>
+                                                    </Card>
+                                                )
+                                            })}
+                                        </CardColumns>
+                                    </Widget>
+                                </Col>
+                            </Row>
+                        </div>
+                    </div>
                 </div>
                 <input type="button" value="Build" onClick={() => handleBuilder()} />
                 {message && <p>{message}</p>}
@@ -223,6 +245,7 @@ const BuildTemplate = (props) => {
         const TemplateAccordion = (props) => {
             const { template } = props;
             const [completed, setCompleted] = useState(false);
+            const [open, setOpen] = useState(false);
 
             useEffect(() => {
                 // Find all variables inside template.changedHTML, if vars exist, set color of header to green
@@ -237,12 +260,17 @@ const BuildTemplate = (props) => {
             return (
                 <div>
                     <Card>
-                        <CardHeader style={completed ? {backgroundColor: 'lightgreen'} : {}}>
-                            {template.name} - <span onClick={() => navigator.clipboard.writeText(template.changedHTML)}>Copy to Clipboard</span>
+                        <CardHeader className={styles["card-header-tabs"]} style={completed ? {backgroundColor: 'lightgreen'} : {}}>
+                            <span onClick={() => setOpen(!open)}>{template.name}</span>
+                            <span className={classnames('icon', s.icon)} onClick={() => navigator.clipboard.writeText(template.changedHTML)}>
+                                <i className={`fi flaticon-file-1`} />
+                            </span>
                         </CardHeader>
-                        <CardBody>
-                            <CodeMirror name="html" required value={template.changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
-                        </CardBody>
+                        <Collapse isOpen={open}>
+                            <CardBody>
+                                <CodeMirror name="html" required value={template.changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
+                            </CardBody>
+                        </Collapse>
                     </Card>
                 </div>
             )
@@ -290,6 +318,7 @@ const BuildTemplate = (props) => {
                             </div>
                         </div>
                         <div className="builder-right">
+                            <p>When a template is finished the tab will appear green. Click the file icon to copy code to clipboard.</p>
                             {buildTemplates.map((template, index) => {
                                 return (
                                     <TemplateAccordion key={index} template={template} />

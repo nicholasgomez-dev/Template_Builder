@@ -168,35 +168,42 @@ const CreateTemplate = () => {
                 :   <div className="page-form">
                         <p>Required Fields = <span style={{color:'red'}}>*</span></p>
                         <Form onSubmit={(e) => handleSubmission(e)}>
-                            <FormGroup>
-                                <Label for="name">Template Name<span style={{color:'red'}}>*</span></Label>
-                                <Input type="text" name="name" id="name" placeholder="Template Name" onChange={(e) => handleNameInput(e.target.value)} required />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="description">Template Description<span style={{color:'red'}}>*</span></Label>
-                                <Input type="text" name="description" id="description" placeholder="Template Description" onChange={(e) => handleDescriptionInput(e.target.value)} required />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="oem">OEM<span style={{color:'red'}}>*</span></Label>
-                                <Dropdown name="oem" required isOpen={oemDropdownOpen} toggle={toggleOemDropdown} >
-                                    <DropdownToggle caret>{formData.oem ? formData.oem : 'Select Option'}</DropdownToggle>
-                                    <DropdownMenu>
-                                        <DropdownItem onClick={(e) => handleOEMInput(e)}>All OEMs</DropdownItem>
-                                        {settings.oem ? settings.oem.map((oem, index) => <DropdownItem key={index} onClick={(e) => handleOEMInput(e)}>{oem}</DropdownItem>) : ''}
-                                    </DropdownMenu>
-                                </Dropdown>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="platform">Platform<span style={{color:'red'}}>*</span></Label>
-                                <Dropdown name="platform" required isOpen={platformDropdownOpen} toggle={togglePlatformDropdown} >
-                                    <DropdownToggle caret>{formData.platform ? formData.platform : 'Select Option'}</DropdownToggle>
-                                    <DropdownMenu>
-                                        <DropdownItem onClick={(e) => handlePlatformInput(e)}>All Platforms</DropdownItem>
-                                        {settings.platform ? settings.platform.map((platform, index) => <DropdownItem key={index} onClick={(e) => handlePlatformInput(e)}>{platform}</DropdownItem>) : ''}
-                                    </DropdownMenu>
-                                </Dropdown>
-                            </FormGroup>
-                            <div className="split-container">
+                            <div className={styles["split-inputs-container"]}>
+                                <div>
+                                    <FormGroup>
+                                        <Label for="name">Template Name<span style={{color:'red'}}>*</span></Label>
+                                        <Input type="text" name="name" id="name" placeholder="Template Name" onChange={(e) => handleNameInput(e.target.value)} required />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="description">Template Description<span style={{color:'red'}}>*</span></Label>
+                                        <Input type="text" name="description" id="description" placeholder="Template Description" onChange={(e) => handleDescriptionInput(e.target.value)} required />
+                                    </FormGroup>
+                                </div>
+
+                                <div>
+                                    <FormGroup>
+                                        <Label for="oem">OEM<span style={{color:'red'}}>*</span></Label>
+                                        <Dropdown name="oem" required isOpen={oemDropdownOpen} toggle={toggleOemDropdown} >
+                                            <DropdownToggle caret>{formData.oem ? formData.oem : 'Select Option'}</DropdownToggle>
+                                            <DropdownMenu>
+                                                <DropdownItem onClick={(e) => handleOEMInput(e)}>All OEMs</DropdownItem>
+                                                {settings.oem ? settings.oem.map((oem, index) => <DropdownItem key={index} onClick={(e) => handleOEMInput(e)}>{oem}</DropdownItem>) : ''}
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="platform">Platform<span style={{color:'red'}}>*</span></Label>
+                                        <Dropdown name="platform" required isOpen={platformDropdownOpen} toggle={togglePlatformDropdown} >
+                                            <DropdownToggle caret>{formData.platform ? formData.platform : 'Select Option'}</DropdownToggle>
+                                            <DropdownMenu>
+                                                <DropdownItem onClick={(e) => handlePlatformInput(e)}>All Platforms</DropdownItem>
+                                                {settings.platform ? settings.platform.map((platform, index) => <DropdownItem key={index} onClick={(e) => handlePlatformInput(e)}>{platform}</DropdownItem>) : ''}
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </FormGroup>
+                                </div>
+                            </div>
+                            <div className={styles["split-container"]}>
                                 <div className="split-container-left">
                                     <FormGroup>
                                         <Label for="html">Upload Minified HTML<span style={{color:'red'}}>*</span></Label>

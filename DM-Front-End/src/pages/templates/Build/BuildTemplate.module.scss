@@ -3,3 +3,18 @@
     grid-template-columns: 1fr 1fr;
     gap: 1em;
 }
+
+.card-header-tabs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.hideCodeMirror {
+    height: 0px !important;
+}
+
+.template-card {
+    &:hover {
+        cursor: pointer;
+    }
+}

@@ -9,3 +9,15 @@
 .allFound {
     background-color: lightgreen;
 }
+
+.split-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 1em;
+}
+
+.split-inputs-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+}
