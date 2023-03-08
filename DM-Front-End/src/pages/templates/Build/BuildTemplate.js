@@ -71,7 +71,7 @@ const BuildTemplate = (props) => {
                     <CardColumns>
                         {filteredTemplates.map((template, index) => {
                             return (
-                                <Card key={index} onClick={() => handleTemplateSelect(template)}>
+                                <Card key={index} onClick={() => handleTemplateSelect(template)} style={(template.selected ? {backgroundColor: 'darkgrey'} : {})}>
                                     <CardTitle>
                                         <h4>{template.name}</h4>
                                     </CardTitle>
@@ -84,9 +84,6 @@ const BuildTemplate = (props) => {
                                         </CardText>
                                         <CardText>
                                             {template.platform}
-                                        </CardText>
-                                        <CardText>
-                                            {template.selected ? 'Selected' : ''}
                                         </CardText>
                                     </CardBody>
                                 </Card>
@@ -179,6 +176,7 @@ const BuildTemplate = (props) => {
             setMessageBuilder(null);
             setDealerUpdated(false);
             setUpdatingDealer(true);
+
             // If every field in formdata is filled out
             for (let key in formData) {
                 if (formData[key] === '') {
@@ -187,6 +185,20 @@ const BuildTemplate = (props) => {
                     return;
                 }
             }
+
+            // Check if any changes were made
+            let changesMade = false;
+            for (let key in formData) {
+                if (formData[key] !== dealer.variables[key]) {
+                    changesMade = true;
+                }
+            }
+            if (!changesMade) {
+                setMessageBuilder('No changes were made.');
+                setUpdatingDealer(false);
+                return;
+            }
+
             // Push formdata to dealer.variables array
             let updatedDealer = {...dealer};
             for (let key in formData) {
@@ -226,7 +238,7 @@ const BuildTemplate = (props) => {
                 <div>
                     <Card>
                         <CardHeader style={completed ? {backgroundColor: 'lightgreen'} : {}}>
-                            {template.name} - <span onClick={() => navigator.clipboard.writeText(template.changedHTML)}>Copy to Clipboard</span><p onClick={() => console.log(completed)}>completed</p>
+                            {template.name} - <span onClick={() => navigator.clipboard.writeText(template.changedHTML)}>Copy to Clipboard</span>
                         </CardHeader>
                         <CardBody>
                             <CodeMirror name="html" required value={template.changedHTML} options={{ mode: 'htmlmixed', theme: 'material', lineNumbers: false }} />
@@ -260,6 +272,22 @@ const BuildTemplate = (props) => {
                                     </FormGroup>
                                 )
                             })}
+                            <div className="save-variables-button">
+                            {   
+                                // Updating dealer variables
+                                updatingDealer ? 
+                                <Loader />
+
+                                // If dealer variables updated
+                                : (!updatingDealer && dealerUpdated) ?
+                                <p style={{color: 'green'}}>Successfully saved dealer variables.</p>
+
+                                // Before updating dealer variables
+                                :
+                                <input type="button" value="Save Variables" onClick={() => handleSaveVariables()} />
+                            }
+                            {messageBuilder && <p>{messageBuilder}</p>}
+                            </div>
                         </div>
                         <div className="builder-right">
                             {buildTemplates.map((template, index) => {
@@ -270,20 +298,6 @@ const BuildTemplate = (props) => {
                         </div>
                     </div>
                 }
-                {   
-                    // Updating dealer variables
-                    updatingDealer ? 
-                    <Loader />
-
-                    // If dealer variables updated
-                    : (!updatingDealer && dealerUpdated) ?
-                    <p style={{color: 'green'}}>Successfully saved dealer variables.</p>
-
-                    // Before updating dealer variables
-                    :
-                    <input type="button" value="Save Variables" onClick={() => handleSaveVariables()} />
-                }
-                {messageBuilder && <p>{messageBuilder}</p>}
             </div>
         )
     }
